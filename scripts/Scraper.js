@@ -3,7 +3,7 @@ var request = require('request');
 var cheerio = require('cheerio');
 var async = require('async');
 var base_uri = 'https://courses.students.ubc.ca';
-module.exports.mine = function(size) {
+module.exports.mine = function(size, callback) {
     console.time("scrape");
     var departments = [];
     async.series([getDepartments, getCourses, getSection], function () {
@@ -12,12 +12,14 @@ module.exports.mine = function(size) {
         content = JSON.stringify(departments, null, 4);
         fs.writeFile("dbInfo.json", content, 'utf8', function (err) {
             if (err) {
-                return console.log(err);
+                console.log(err);
             }
             console.log("The file was saved!");
+            if (callback){
+                callback(departments);
+            }
         })
     });
-
     function getDepartments(callback) {
         var url = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=0';
         request(url, function (error, response, html) {
