@@ -8,6 +8,7 @@ var app     = express();
 
 var maxReplies = 50;
 app.get('/scrape', function(req, res){
+    console.log("Scrape request received from: " + req.get("host") + " for " + req.query.size + " departments.")
     scraper.mine(req.query.size, sendJson);
     function sendJson(content) {
         if (req.query.size <= maxReplies){
