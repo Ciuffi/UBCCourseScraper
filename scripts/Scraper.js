@@ -119,4 +119,4 @@ module.exports.mine = function(size, callback) {
             callback()
         })
     }
-}
+};
