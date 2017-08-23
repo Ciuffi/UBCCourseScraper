@@ -11,7 +11,7 @@
         $.get('/scrape', {size: size, search: search});
         $("#process")[0].style.visibility = 'visible';
     }
-    var socket = io('http://localhost');
+    var socket = io('https://localhost');
     socket.on('done', function (data) {
         $("#result")[0].innerText = data;
         $("#result").removeClass("prettyprinted");
