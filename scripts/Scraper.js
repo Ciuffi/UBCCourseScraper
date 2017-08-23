@@ -26,7 +26,7 @@ module.exports.mine = function(size, callback, search) {
             if (!error) {
                 var $ = cheerio.load(html);
                 console.log("Beginning department collection...");
-                if (size){
+                if (size && !search){
                     console.log("getting " + size + " departments..");
                     table = $('#mainTable tr').slice(0, size);
                 }else{
