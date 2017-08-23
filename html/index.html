@@ -11,7 +11,7 @@
         $.get('/scrape', {size: size, search: search});
         $("#process")[0].style.visibility = 'visible';
     }
-    var socket = io('https://localhost');
+    var socket = io('https://stark-thicket-76330.herokuapp.com');
     socket.on('done', function (data) {
         $("#result")[0].innerText = data;
         $("#result").removeClass("prettyprinted");
