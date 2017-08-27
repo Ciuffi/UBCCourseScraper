@@ -43,10 +43,10 @@ module.exports.getCourses = function(size, department, callback){
             console.log("Searching for courses in: " + department.name);
             if (size) {
                 console.log("getting " + size + " courses..");
-                table').find('tr'('#mainTable tr').slice(0, size);
+                table = $('#mainTable').find('tr').slice(0, parseInt(size)+1);
             } else {
                 console.log("Getinng all courses..");
-                table').find('tr'('#mainTable tr')
+                table = $('#mainTable').find('tr')
             }
             table.each(function (i) {
                 if ($(this).children('td').eq(0).children('a').attr("href")) {
@@ -74,9 +74,9 @@ module.exports.getSections = function (size, course, callback) {
             var $ = cheerio.load(html);
             if (size) {
                 console.log("getting " + size + " sections..");
-                table = $('.section-summary tr').slice(0, size);
+                table = $('.section-summary tr').slice(0, parseInt(size)+1);
             } else {
-                console.log("Getinng all sections..");
+                console.log("getting all sections..");
                 table = $('.section-summary tr');
             }
             table.each(function (i) {

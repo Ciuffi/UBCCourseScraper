@@ -9,12 +9,8 @@
         $.get('/populateList', {size: size});
         $("#process")[0].style.visibility = 'visible';
     }
-    try {
-        var socket = io('https://stark-thicket-76330.herokuapp.com/')
-    }catch (e){
-        var socket = io('localhost:8082');
+    socket = io(window.location.href);
 
-    }
     socket.on('done', function (data) {
         $("#result")[0].innerText = data;
         $("#result").removeClass("prettyprinted");
