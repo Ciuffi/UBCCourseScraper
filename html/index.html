@@ -5,7 +5,6 @@
 
 <script>
     function scrape() {
-        console.log("clicked")
         size = $('#size')[0].value;
         $.get('/populateList', {size: size});
         $("#process")[0].style.visibility = 'visible';

@@ -1,11 +1,11 @@
 var express = require('express');
 var Scraper = require('./scripts/Scraper.js');
-var app     = express();
+var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
 blocked = false;
-var maxReplies = 50;
+
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/html/index.html')
 });
