@@ -1,7 +1,7 @@
-var fs = require('fs');
 var request = require('request');
 var cheerio = require('cheerio');
 var async = require('async');
+var dbClient = require('./dbClient.js');
 var base_uri = 'https://courses.students.ubc.ca';
 module.exports.mine = function(size, callback) {
     console.time("scrape");
@@ -9,16 +9,7 @@ module.exports.mine = function(size, callback) {
     async.series([getDepartments, getCourses, getSection], function () {
         console.log("Done");
         console.timeEnd("scrape");
-        content = JSON.stringify(departments, null, 4);
-        fs.writeFile("dbInfo.json", content, 'utf8', function (err) {
-            if (err) {
-                console.log(err);
-            }
-            console.log("The file was saved!");
-            if (callback){
-                callback(departments);
-            }
-        })
+        callback(departments);
     });
     function getDepartments(callback) {
         var url = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=0';
@@ -43,6 +34,7 @@ module.exports.mine = function(size, callback) {
                             courses: null
                         };
                         departments.push(department);
+                        dbClient.departmentInsert(department);
                         console.log("Found department: " + department.name);
                     }
                 });
@@ -58,7 +50,6 @@ module.exports.mine = function(size, callback) {
                 if (!error) {
                     var $ = cheerio.load(html);
                     var courses = [];
-                    console.log("   Searching for courses in: " + dep.name);
                     table = $('#mainTable tr');
                     table.each(function () {
                         if ($(this).children('td').eq(0).children('a').attr("href")) {
@@ -66,9 +57,9 @@ module.exports.mine = function(size, callback) {
                                 code: $(this).children('td').eq(0).text().trim(),
                                 url: $(this).children('td').eq(0).children('a').attr("href"),
                                 name: $(this).children('td').eq(1).text().trim(),
-                                sections: null
                             };
-                            console.log("      Found course: " + course.name)
+                            console.log("      Found course: " + course.name);
+                            dbClient.courseInsert(course);
                             courses.push(course)
                         }
                     });
@@ -87,8 +78,6 @@ module.exports.mine = function(size, callback) {
         async.forEach(departments, function (dep, callback) {
             async.forEach(dep.courses, function (course, callback) {
                 request(base_uri + course.url, function (error, response, html) {
-                    console.log("   Searching sections for: " + course.name)
-                    var sections = [];
                     if (!error) {
                         var $ = cheerio.load(html);
                         table = $('.section-summary tr');
@@ -100,16 +89,14 @@ module.exports.mine = function(size, callback) {
                                     url: $(this).children('td').eq(1).children('a').attr("href"),
                                     type: $(this).children('td').eq(2).text().trim(),
                                     term: $(this).children('td').eq(3).text().trim(),
+                                    courseCode: course.code
                                 };
                                 console.log("      Found section: " + section.code);
-                                sections.push(section)
+                                dbClient.sectionInsert(section);
                             }
                         });
-                        course.sections = sections;
-                        callback();
-                    }else{
-                        console.error(error);
                     }
+                    callback();
                 })
             }, function () {
                 callback()

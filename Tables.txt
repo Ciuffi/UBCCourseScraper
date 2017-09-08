@@ -1,0 +1,45 @@
+CREATE TABLE public."Sections"
+(
+    "ID" bigserial NOT NULL,
+    "Code" character varying NOT NULL,
+    "URL" character varying NOT NULL,
+    "Course Code" character varying COLLATE pg_catalog."default",
+    PRIMARY KEY ("ID")
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+ALTER TABLE public."Sections"
+    OWNER to postgres;
+
+CREATE TABLE public."Courses"
+(
+    "ID" bigserial NOT NULL,
+    "Name" character varying NOT NULL,
+    "Code" character varying NOT NULL,
+    "URL" character varying NOT NULL,
+    PRIMARY KEY ("ID")
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+ALTER TABLE public."Courses"
+    OWNER to postgres;
+
+CREATE TABLE public."Departments"
+(
+    "ID" bigserial NOT NULL,
+    "Name" character varying NOT NULL,
+    "Code" character varying NOT NULL,
+    "URL" character varying NOT NULL,
+    PRIMARY KEY ("ID")
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public."Departments"
+    OWNER to postgres;
