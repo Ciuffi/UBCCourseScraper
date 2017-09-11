@@ -1,5 +1,5 @@
 var pg = require('pg');
-var connectionURL='postgresql://postgres:admin@localhost:5432/newDB';
+var connectionURL='postgresql://ciuffi@localhost:5432/scraperDB';
 var client = new pg.Client({
     connectionString: connectionURL
 });
@@ -17,8 +17,12 @@ module.exports.departmentInsert = function (department) {
             client.query(queryText, values, function (err, res) {
                 if (err){
                     console.log(err.stack);
+                }else{
+                    console.log("inserted: " + department.code);
                 }
             })
+        }else{
+            console.log("updated: " + department.code);
         }
     })
 };
@@ -35,8 +39,12 @@ module.exports.courseInsert = function (course) {
             client.query(queryText, values, function (err, res) {
                 if (err){
                     console.log(err.stack);
+                }else{
+                    console.log("inserted: " + course.code);
                 }
             })
+        }else{
+            console.log("updated: " + course.code);
         }
     })
 };
@@ -53,8 +61,12 @@ module.exports.sectionInsert = function (section) {
             client.query(queryText, values, function (err, res) {
                 if (err){
                     console.log(err.stack);
+                }else{
+                    console.log("inserted: " + section.code);
                 }
             })
+        }else{
+            console.log("updated: " + section.code);
         }
     })
 };

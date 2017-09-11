@@ -9,7 +9,8 @@ module.exports.mine = function(size, callback) {
     async.series([getDepartments, getCourses, getSection], function () {
         console.log("Done");
         console.timeEnd("scrape");
-        callback(departments);
+        departments = null;
+        callback();
     });
 
     function getDepartments(callback) {
@@ -77,7 +78,7 @@ module.exports.mine = function(size, callback) {
     function getSection(callback) {
         console.log("beginning section search..");
         async.forEach(departments, function (dep, callback) {
-            async.forEach(dep.courses, function (course, callback) {
+            async.eachSeries(dep.courses, function (course, callback) {
                 request(base_uri + course.url, function (error, response, html) {
                     if (!error) {
                         var $ = cheerio.load(html);
@@ -96,10 +97,14 @@ module.exports.mine = function(size, callback) {
                                 dbClient.sectionInsert(section);
                             }
                         });
+                        callback();
+                    }else{
+                        console.log("Connection reset. waiting 5 seconds.");
+                        setTimeout(callback, 5000);
                     }
-                    callback();
                 })
             }, function () {
+                dep = null;
                 callback()
             })
         }, function () {
