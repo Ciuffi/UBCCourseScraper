@@ -9,7 +9,7 @@ app.get('/scrape', function(req, res){
         scraper.mine(req.query.size, sendJson);
 
         function sendJson(departments) {
-            res.json(JSON.stringify(departments, null, 4));
+            res.sendStatus(200);
             blocked = false;
         }
     }

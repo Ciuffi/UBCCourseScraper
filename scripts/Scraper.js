@@ -11,6 +11,7 @@ module.exports.mine = function(size, callback) {
         console.timeEnd("scrape");
         callback(departments);
     });
+
     function getDepartments(callback) {
         var url = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=0';
         request(url, function (error, response, html) {

@@ -1,0 +1,215 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.6.5
+-- Dumped by pg_dump version 9.6.5
+
+-- Started on 2017-09-10 22:25:30
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 1 (class 3079 OID 12387)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2148 (class 0 OID 0)
+-- Dependencies: 1
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 188 (class 1259 OID 33129)
+-- Name: Courses; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE "Courses" (
+    "ID" bigint NOT NULL,
+    "Name" character varying NOT NULL,
+    "Code" character varying NOT NULL,
+    "URL" character varying NOT NULL
+);
+
+
+ALTER TABLE "Courses" OWNER TO postgres;
+
+--
+-- TOC entry 187 (class 1259 OID 33127)
+-- Name: Courses_ID_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Courses_ID_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "Courses_ID_seq" OWNER TO postgres;
+
+--
+-- TOC entry 2149 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: Courses_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Courses_ID_seq" OWNED BY "Courses"."ID";
+
+
+--
+-- TOC entry 190 (class 1259 OID 33140)
+-- Name: Departments; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE "Departments" (
+    "ID" bigint NOT NULL,
+    "Name" character varying NOT NULL,
+    "Code" character varying NOT NULL,
+    "URL" character varying NOT NULL
+);
+
+
+ALTER TABLE "Departments" OWNER TO postgres;
+
+--
+-- TOC entry 189 (class 1259 OID 33138)
+-- Name: Departments_ID_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Departments_ID_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "Departments_ID_seq" OWNER TO postgres;
+
+--
+-- TOC entry 2150 (class 0 OID 0)
+-- Dependencies: 189
+-- Name: Departments_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Departments_ID_seq" OWNED BY "Departments"."ID";
+
+
+--
+-- TOC entry 186 (class 1259 OID 33118)
+-- Name: Sections; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE "Sections" (
+    "ID" bigint NOT NULL,
+    "Code" character varying NOT NULL,
+    "URL" character varying NOT NULL,
+    "Course Code" character varying
+);
+
+
+ALTER TABLE "Sections" OWNER TO postgres;
+
+--
+-- TOC entry 185 (class 1259 OID 33116)
+-- Name: Sections_ID_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Sections_ID_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "Sections_ID_seq" OWNER TO postgres;
+
+--
+-- TOC entry 2151 (class 0 OID 0)
+-- Dependencies: 185
+-- Name: Sections_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Sections_ID_seq" OWNED BY "Sections"."ID";
+
+
+--
+-- TOC entry 2017 (class 2604 OID 33132)
+-- Name: Courses ID; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Courses" ALTER COLUMN "ID" SET DEFAULT nextval('"Courses_ID_seq"'::regclass);
+
+
+--
+-- TOC entry 2018 (class 2604 OID 33143)
+-- Name: Departments ID; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Departments" ALTER COLUMN "ID" SET DEFAULT nextval('"Departments_ID_seq"'::regclass);
+
+
+--
+-- TOC entry 2016 (class 2604 OID 33121)
+-- Name: Sections ID; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Sections" ALTER COLUMN "ID" SET DEFAULT nextval('"Sections_ID_seq"'::regclass);
+
+
+--
+-- TOC entry 2022 (class 2606 OID 33137)
+-- Name: Courses Courses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Courses"
+    ADD CONSTRAINT "Courses_pkey" PRIMARY KEY ("ID");
+
+
+--
+-- TOC entry 2024 (class 2606 OID 33148)
+-- Name: Departments Departments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Departments"
+    ADD CONSTRAINT "Departments_pkey" PRIMARY KEY ("ID");
+
+
+--
+-- TOC entry 2020 (class 2606 OID 33126)
+-- Name: Sections Sections_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Sections"
+    ADD CONSTRAINT "Sections_pkey" PRIMARY KEY ("ID");
+
+
+-- Completed on 2017-09-10 22:25:30
+
+--
+-- PostgreSQL database dump complete
+--
+
