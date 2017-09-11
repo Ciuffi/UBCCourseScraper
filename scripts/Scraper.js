@@ -33,6 +33,7 @@ module.exports.mine = function(size, callback) {
                             code: $(this).children('td').eq(0).text().trim(),
                             url: $(this).children('td').eq(0).children('a').attr("href"),
                             name: $(this).children('td').eq(1).text().trim(),
+                            faculty: $(this).children('td').eq(2).text().trim(),
                             courses: null
                         };
                         departments.push(department);
