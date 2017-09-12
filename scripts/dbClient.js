@@ -1,5 +1,5 @@
 var pg = require('pg');
-var connectionURL='postgresql://postgres@localhost:5432/newDB';
+var connectionURL='postgresql://postgres@localhost:5432/UBCCourseDatabase';
 var client = new pg.Client({
     connectionString: connectionURL
 });
@@ -50,14 +50,14 @@ module.exports.courseInsert = function (course) {
 };
 module.exports.sectionInsert = function (section) {
     var queryText = 'UPDATE "Sections" ' +
-        'SET "Code"=$1, "URL"=$2 ' +
+        'SET "Code"=$1, "URL"=$2, "Term"=$3, "Days"=$4, "Start Time"=$5, "End Time"=$6, "Type"=$7' +
         'WHERE "Code"=$1';
-    var values = [section.code, section.url];
+    var values = [section.code, section.url, section.term, section.days, section.startTime, section.endTime, section.type];
     client.query(queryText, values, function (err, res) {
         if (err) {
             console.log(err)
         } else if (res.rowCount === 0){
-            var queryText = 'INSERT INTO "Sections"("Code", "URL") VALUES($1, $2)';
+            var queryText = 'INSERT INTO "Sections"("Code", "URL", "Term", "Days", "Start Time", "End Time", "Type") VALUES($1, $2, $3, $4, $5, $6, $7)';
             client.query(queryText, values, function (err, res) {
                 if (err){
                     console.log(err.stack);

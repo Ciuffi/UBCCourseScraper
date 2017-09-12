@@ -92,6 +92,9 @@ module.exports.mine = function(size, callback) {
                                     url: $(this).children('td').eq(1).children('a').attr("href"),
                                     type: $(this).children('td').eq(2).text().trim(),
                                     term: $(this).children('td').eq(3).text().trim(),
+                                    days: $(this).children('td').eq(5).text().trim(),
+                                    startTime: $(this).children('td').eq(6).text().trim(),
+                                    endTime: $(this).children('td').eq(7).text().trim(),
                                     courseCode: course.code
                                 };
                                 console.log("      Found section: " + section.code);
