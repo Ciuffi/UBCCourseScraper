@@ -1,6 +1,6 @@
 var express = require('express');
 var scraper = require('./scripts/Scraper.js');
-var dbClient = require('./scripts/dbClient.js')
+var dbClient = require('./scripts/dbClient.js');
 var app     = express();
 blocked = false;
 app.get('/scrape', function(req, res){

@@ -23,7 +23,7 @@ module.exports.mine = function(size, callback) {
                     console.log("getting " + size + " departments..");
                     table = $('#mainTable tr').slice(0, size);
                 }else{
-                    console.log("Getinng all departments..");
+                    console.log("getting all departments..");
                     table = $('#mainTable tr')
                 }
 
