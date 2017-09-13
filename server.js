@@ -1,5 +1,6 @@
 var express = require('express');
 var scraper = require('./scripts/Scraper.js');
+var dbClient = require('./scripts/dbClient.js')
 var app     = express();
 blocked = false;
 app.get('/scrape', function(req, res){
@@ -14,6 +15,30 @@ app.get('/scrape', function(req, res){
         }
     }
 
+});
+
+app.get('/getDepartmentByCode', function (req, res) {
+    dbClient.getDepartmentByCode(req.query.code, returnResult);
+
+    function returnResult(result) {
+        res.send(result);
+    }
+});
+
+app.get('/getCoursesByCode', function (req, res) {
+    dbClient.getCoursesByCode(req.query.code, returnResult);
+
+    function returnResult(result) {
+        res.send(result);
+    }
+});
+
+app.get('/getSectionsByCode', function (req, res) {
+    dbClient.getSectionsByCode(req.query.code, returnResult);
+
+    function returnResult(result) {
+        res.send(result);
+    }
 });
 var port = process.env.PORT || 8080;
 app.listen(port);

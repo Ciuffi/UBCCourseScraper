@@ -1,5 +1,5 @@
 var pg = require('pg');
-var connectionURL='postgresql://postgres@localhost:5432/testDB';
+var connectionURL='postgresql://postgres:admin@localhost:5432/UBCCourseDatabase';
 var client = new pg.Client({
     connectionString: connectionURL
 });
@@ -23,6 +23,21 @@ module.exports.departmentInsert = function (department) {
             })
         }else{
             console.log("updated: " + department.code);
+        }
+    })
+};
+module.exports.getDepartmentByCode = function (code, callback) {
+    var queryText = 'SELECT * FROM "Departments" WHERE "Code"=$1';
+    var values = [code];
+    console.log("searching for.." + code);
+    client.query(queryText, values, function (err, res) {
+        if (err) {
+            console.log(err);
+        }else if (res.rowCount >= 1){
+            console.log(res);
+            callback(JSON.stringify(res.rows[0], null, 4));
+        }else{
+            callback("Not found :(");
         }
     })
 };
@@ -67,6 +82,38 @@ module.exports.sectionInsert = function (section) {
             })
         }else{
             console.log("updated: " + section.code);
+        }
+    })
+};
+
+module.exports.getCoursesByCode = function (code, callback) {
+    var queryText = 'SELECT * FROM "Courses" WHERE "Code" LIKE  $1';
+    var values = ['%' + code + '%'];
+    console.log("searching for.." + code);
+    client.query(queryText, values, function (err, res) {
+        if (err) {
+            console.log(err);
+        }else if (res.rowCount >= 1){
+            console.log(res);
+            callback(JSON.stringify(res.rows, null, 4));
+        }else{
+            callback("Not found :(");
+        }
+    })
+};
+
+module.exports.getSectionsByCode = function (code, callback) {
+    var queryText = 'SELECT * FROM "Courses" WHERE "Code" LIKE  $1';
+    var values = ['%' + code + '%'];
+    console.log("searching for.." + code);
+    client.query(queryText, values, function (err, res) {
+        if (err) {
+            console.log(err);
+        }else if (res.rowCount >= 1){
+            console.log(res);
+            callback(JSON.stringify(res.rows, null, 4));
+        }else{
+            callback("Not found :(");
         }
     })
 };
