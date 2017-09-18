@@ -1,8 +1,23 @@
 var express  = require('express');
 var scraper  = require('./scripts/Scraper.js');
 var dbClient = require('./scripts/dbClient.js');
+var schedule = require('node-schedule');
 var app      = express();
 blocked = false;
+
+schedule.scheduleJob('* 1 * * *', function(){
+    if (!blocked) {
+        blocked = true;
+        var startTime = new Date().toLocaleString();
+        console.log("Starting daily scrape...");
+        scraper.mine(undefined, callback);
+        function callback() {
+            var endTime = new Date().toLocaleString();
+            dbClient.timeInsert(startTime, endTime);
+            blocked = false;
+        }
+    }
+});
 app.get("/", function (req, res) {
     res.sendFile(__dirname + "/HTML/index.html");
 });
