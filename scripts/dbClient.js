@@ -14,6 +14,29 @@ client.connect(function (error) {
         });
     }
 });
+
+module.exports.timeInsert = function (startTime, endTime) {
+    var queryText = 'INSERT INTO "scrapeTimes"("startDate", "endDate") VALUES($1, $2)';
+    var values = [startTime, endTime];
+    client.query(queryText, values, function (err, res) {
+        if (err){
+            console.log(err)
+        }else{
+            console.log("Inserted timeData: StartTime: " + startTime + " endTime: " + endTime);
+        }
+    })
+};
+module.exports.getLastTime = function (callback) {
+    var queryText = 'SELECT * from "scrapeTimes"' +
+        'order by "ID" desc limit 1';
+    client.query(queryText, function (err, res) {
+        if (err){
+            console.log(err)
+        }else{
+            callback(res.rows[0]);
+        }
+    })
+};
 module.exports.departmentInsert = function (department) {
     var queryText = 'UPDATE "Departments" ' +
         'SET "Name"=$1, "Code"=$2, "URL"=$3, "Faculty"=$4' +
@@ -44,10 +67,19 @@ module.exports.getDepartmentByCode = function (code, callback) {
         if (err) {
             console.log(err);
         }else if (res.rowCount >= 1){
-            console.log(res);
             callback(JSON.stringify(res.rows[0], null, 4));
         }else{
             callback("Not found :(");
+        }
+    })
+};
+module.exports.getDepartments = function (callback) {
+    var queryText = 'SELECT * FROM "Departments"';
+    client.query(queryText, function (err, res) {
+        if (err) {
+            console.log(err);
+        }else if (res.rowCount >= 1){
+            callback(JSON.stringify(res.rows, null, 4));
         }
     })
 };
@@ -104,7 +136,6 @@ module.exports.getCoursesByCode = function (code, callback) {
         if (err) {
             console.log(err);
         }else if (res.rowCount >= 1){
-            console.log(res);
             callback(JSON.stringify(res.rows, null, 4));
         }else{
             callback("Not found :(");
@@ -120,7 +151,6 @@ module.exports.getSectionsByCode = function (code, callback) {
         if (err) {
             console.log(err);
         }else if (res.rowCount >= 1){
-            console.log(res);
             callback(JSON.stringify(res.rows, null, 4));
         }else{
             callback("Not found :(");
