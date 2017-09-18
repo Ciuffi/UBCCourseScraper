@@ -1,9 +1,19 @@
 var pg = require('pg');
-var connectionURL='postgresql://postgres:admin@localhost:5432/UBCCourseDatabase';
 var client = new pg.Client({
-    connectionString: connectionURL
+    connectionString: process.env.DATABASE_URL,
+    ssl: true
 });
-client.connect();
+client.connect(function (error) {
+    if (error){
+        client.end();
+        client = new pg.Client({
+            connectionString: process.env.DATABASE_URL,
+            ssl: false
+        });
+        client.connect(function (error) {
+        });
+    }
+});
 module.exports.departmentInsert = function (department) {
     var queryText = 'UPDATE "Departments" ' +
         'SET "Name"=$1, "Code"=$2, "URL"=$3, "Faculty"=$4' +
