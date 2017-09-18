@@ -10,5 +10,8 @@
 		"cheerio"    : "latest",
 		"async"      : "latest",
 		"pg"         : "latest"
+	},
+	"scripts": {
+		"start": "node server.js"
 	}
 }
