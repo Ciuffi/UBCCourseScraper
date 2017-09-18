@@ -1,9 +1,19 @@
 var pg = require('pg');
-var connectionURL='postgresql://postgres@localhost:5432/testDB';
 var client = new pg.Client({
-    connectionString: connectionURL
+    connectionString: process.env.DATABASE_URL,
+    ssl: true
 });
-client.connect();
+client.connect(function (error) {
+    if (error){
+        client.end();
+        client = new pg.Client({
+            connectionString: process.env.DATABASE_URL,
+            ssl: false
+        });
+        client.connect(function (error) {
+        });
+    }
+});
 module.exports.departmentInsert = function (department) {
     var queryText = 'UPDATE "Departments" ' +
         'SET "Name"=$1, "Code"=$2, "URL"=$3, "Faculty"=$4' +
@@ -23,6 +33,21 @@ module.exports.departmentInsert = function (department) {
             })
         }else{
             console.log("updated: " + department.code);
+        }
+    })
+};
+module.exports.getDepartmentByCode = function (code, callback) {
+    var queryText = 'SELECT * FROM "Departments" WHERE "Code"=$1';
+    var values = [code];
+    console.log("searching for.." + code);
+    client.query(queryText, values, function (err, res) {
+        if (err) {
+            console.log(err);
+        }else if (res.rowCount >= 1){
+            console.log(res);
+            callback(JSON.stringify(res.rows[0], null, 4));
+        }else{
+            callback("Not found :(");
         }
     })
 };
@@ -67,6 +92,38 @@ module.exports.sectionInsert = function (section) {
             })
         }else{
             console.log("updated: " + section.code);
+        }
+    })
+};
+
+module.exports.getCoursesByCode = function (code, callback) {
+    var queryText = 'SELECT * FROM "Courses" WHERE "Code" LIKE  $1';
+    var values = ['%' + code + '%'];
+    console.log("searching for.." + code);
+    client.query(queryText, values, function (err, res) {
+        if (err) {
+            console.log(err);
+        }else if (res.rowCount >= 1){
+            console.log(res);
+            callback(JSON.stringify(res.rows, null, 4));
+        }else{
+            callback("Not found :(");
+        }
+    })
+};
+
+module.exports.getSectionsByCode = function (code, callback) {
+    var queryText = 'SELECT * FROM "Courses" WHERE "Code" LIKE  $1';
+    var values = ['%' + code + '%'];
+    console.log("searching for.." + code);
+    client.query(queryText, values, function (err, res) {
+        if (err) {
+            console.log(err);
+        }else if (res.rowCount >= 1){
+            console.log(res);
+            callback(JSON.stringify(res.rows, null, 4));
+        }else{
+            callback("Not found :(");
         }
     })
 };
