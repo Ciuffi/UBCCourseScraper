@@ -49,14 +49,6 @@ app.get('/scrape', function(req, res){
     }
 });
 
-app.get('/getDepartmentByCode', function (req, res) {
-    dbClient.getDepartmentByCode(req.query.code, returnResult);
-
-    function returnResult(result) {
-        res.send(result);
-    }
-});
-
 app.get('/getDepartments', function (req, res) {
     dbClient.getDepartments(returnResult);
     function returnResult(result) {
@@ -64,8 +56,24 @@ app.get('/getDepartments', function (req, res) {
     }
 });
 
+app.get('/getDepartmentByCode', function (req, res) {
+    if (req.query.code){
+        dbClient.getDepartmentByCode(req.query.code, returnResult);
+    }else{
+        res.send("No code!");
+    }
+
+    function returnResult(result) {
+        res.send(result);
+    }
+});
+
 app.get('/getCoursesByCode', function (req, res) {
-    dbClient.getCoursesByCode(req.query.code, returnResult);
+    if (req.query.code){
+        dbClient.getCoursesByCode(req.query.code, returnResult);
+    }else{
+        res.send("No code!")
+    }
 
     function returnResult(result) {
         res.send(result);
@@ -73,8 +81,11 @@ app.get('/getCoursesByCode', function (req, res) {
 });
 
 app.get('/getSectionsByCode', function (req, res) {
-    dbClient.getSectionsByCode(req.query.code, returnResult);
-
+    if (req.query.code){
+        dbClient.getSectionsByCode(req.query.code, returnResult);
+    }else{
+        res.send("No code!")
+    }
     function returnResult(result) {
         res.send(result);
     }

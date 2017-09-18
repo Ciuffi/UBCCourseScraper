@@ -62,7 +62,7 @@ module.exports.departmentInsert = function (department) {
 module.exports.getDepartmentByCode = function (code, callback) {
     var queryText = 'SELECT * FROM "Departments" WHERE "Code"=$1';
     var values = [code];
-    console.log("searching for.." + code);
+    console.log("searching Departments for.." + code);
     client.query(queryText, values, function (err, res) {
         if (err) {
             console.log(err);
@@ -131,7 +131,7 @@ module.exports.sectionInsert = function (section) {
 module.exports.getCoursesByCode = function (code, callback) {
     var queryText = 'SELECT * FROM "Courses" WHERE "Code" LIKE  $1';
     var values = ['%' + code + '%'];
-    console.log("searching for.." + code);
+    console.log("searching Courses for.." + code);
     client.query(queryText, values, function (err, res) {
         if (err) {
             console.log(err);
@@ -144,9 +144,9 @@ module.exports.getCoursesByCode = function (code, callback) {
 };
 
 module.exports.getSectionsByCode = function (code, callback) {
-    var queryText = 'SELECT * FROM "Courses" WHERE "Code" LIKE  $1';
+    var queryText = 'SELECT * FROM "Sections" WHERE "Code" LIKE  $1';
     var values = ['%' + code + '%'];
-    console.log("searching for.." + code);
+    console.log("searching Sections for.." + code);
     client.query(queryText, values, function (err, res) {
         if (err) {
             console.log(err);
