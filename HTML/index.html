@@ -19,10 +19,6 @@
             $("#lastScrapeId").get(0).innerText = "Last Scrape: " + res;
         });
     }
-    function scrape() {
-        $.get("/scrape");
-        scrapeStatus();
-    }
     function scrapeStatus() {
         $.get("/scrapeStatus", function (res) {
             if (res){
@@ -68,7 +64,6 @@
 <h3>Scraper</h3>
 <p id="lastScrapeId">Last Scrape: </p>
 <p id="scrapeStatus">Scrape Status: </p>
-<button onclick="scrape()">Scrape!</button>
 <h4>Database Accessor</h4>
 <label for="search">Code: </label>
 <input id="search"/>
