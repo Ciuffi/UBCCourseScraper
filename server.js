@@ -3,8 +3,8 @@ var scraper  = require('./scripts/Scraper.js');
 var dbClient = require('./scripts/dbClient.js');
 var schedule = require('node-schedule');
 var app      = express();
-blocked = false;
-
+var blocked = false;
+var lastTime;
 schedule.scheduleJob('* 1 * * *', function(){
     if (!blocked) {
         blocked = true;
@@ -22,9 +22,15 @@ app.get("/", function (req, res) {
     res.sendFile(__dirname + "/HTML/index.html");
 });
 app.get('/getLastScrapeTime', function (req, res) {
-    dbClient.getLastTime(returnResult);
+    if (!blocked){
+        dbClient.getLastTime(returnResult);
+    }else{
+        console.log("Last Time: " + lastTime);
+        returnResult(lastTime);
+    }
     function returnResult(result) {
         if (result){
+            lastTime = result;
             res.send(result.endDate);
         }else{
             res.send("No previous scrapes.")
@@ -36,6 +42,9 @@ app.get('/scrapeStatus', function (req, res) {
 });
 app.get('/scrape', function(req, res){
     if (!blocked) {
+        dbClient.getLastTime(function (result) {
+            lastTime = result;
+        });
         blocked = true;
         var startTime = new Date().toLocaleString();
         console.log("Scrape request received from: " + req.get("host") + " for " + req.query.size + " departments.");
