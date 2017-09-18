@@ -25,6 +25,14 @@ app.get('/getDepartmentByCode', function (req, res) {
     }
 });
 
+app.get('/getDepartments', function (req, res) {
+    dbClient.getDepartments(returnResult);
+
+    function returnResult(result) {
+        res.send(result);
+    }
+});
+
 app.get('/getCoursesByCode', function (req, res) {
     dbClient.getCoursesByCode(req.query.code, returnResult);
 
