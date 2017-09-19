@@ -11,6 +11,7 @@ client.connect(function (error) {
             ssl: false
         });
         client.connect(function (error) {
+            console.log(error || "DB connected.");
         });
     }
 });
@@ -21,8 +22,6 @@ module.exports.timeInsert = function (startTime, endTime) {
     client.query(queryText, values, function (err, res) {
         if (err){
             console.log(err)
-        }else{
-            console.log("Inserted timeData: StartTime: " + startTime + " endTime: " + endTime);
         }
     })
 };
@@ -50,12 +49,8 @@ module.exports.departmentInsert = function (department) {
             client.query(queryText, values, function (err, res) {
                 if (err){
                     console.log(err.stack);
-                }else{
-                    console.log("inserted: " + department.code);
                 }
             })
-        }else{
-            console.log("updated: " + department.code);
         }
     })
 };
@@ -96,12 +91,8 @@ module.exports.courseInsert = function (course) {
             client.query(queryText, values, function (err, res) {
                 if (err){
                     console.log(err.stack);
-                }else{
-                    console.log("inserted: " + course.code);
                 }
             })
-        }else{
-            console.log("updated: " + course.code);
         }
     })
 };
@@ -118,12 +109,8 @@ module.exports.sectionInsert = function (section) {
             client.query(queryText, values, function (err, res) {
                 if (err){
                     console.log(err.stack);
-                }else{
-                    console.log("inserted: " + section.code);
                 }
             })
-        }else{
-            console.log("updated: " + section.code);
         }
     })
 };
