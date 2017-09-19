@@ -1,23 +1,10 @@
 var express  = require('express');
 var scraper  = require('./scripts/Scraper.js');
 var dbClient = require('./scripts/dbClient.js');
-var schedule = require('node-schedule');
 var app      = express();
 var blocked = false;
 var lastTime;
-schedule.scheduleJob('* 1 * * *', function(){
-    if (!blocked) {
-        blocked = true;
-        var startTime = new Date().toLocaleString();
-        console.log("Starting daily scrape...");
-        scraper.mine(undefined, callback);
-        function callback() {
-            var endTime = new Date().toLocaleString();
-            dbClient.timeInsert(startTime, endTime);
-            blocked = false;
-        }
-    }
-});
+
 app.get("/", function (req, res) {
     res.sendFile(__dirname + "/HTML/index.html");
 });
@@ -46,15 +33,17 @@ app.get('/scrape', function(req, res){
             lastTime = result;
         });
         blocked = true;
+        res.sendStatus(202);
         var startTime = new Date().toLocaleString();
         console.log("Scrape request received from: " + req.get("host") + " for " + req.query.size + " departments.");
         scraper.mine(req.query.size, callback);
         function callback() {
             var endTime = new Date().toLocaleString();
             dbClient.timeInsert(startTime, endTime);
-            res.sendStatus(200);
             blocked = false;
         }
+    }else{
+        res.sendStatus(503);
     }
 });
 
