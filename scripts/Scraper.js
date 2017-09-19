@@ -23,7 +23,7 @@ module.exports.mine = function(size, callback) {
                     console.log("getting " + size + " departments..");
                     table = $('#mainTable tr').slice(0, size);
                 }else{
-                    console.log("Getinng all departments..");
+                    console.log("getting all departments..");
                     table = $('#mainTable tr')
                 }
 
@@ -38,7 +38,6 @@ module.exports.mine = function(size, callback) {
                         };
                         departments.push(department);
                         dbClient.departmentInsert(department);
-                        console.log("Found department: " + department.name);
                     }
                 });
                 callback();
@@ -61,7 +60,6 @@ module.exports.mine = function(size, callback) {
                                 url: $(this).children('td').eq(0).children('a').attr("href"),
                                 name: $(this).children('td').eq(1).text().trim(),
                             };
-                            console.log("      Found course: " + course.name);
                             dbClient.courseInsert(course);
                             courses.push(course)
                         }
@@ -97,14 +95,17 @@ module.exports.mine = function(size, callback) {
                                     endTime: $(this).children('td').eq(7).text().trim(),
                                     courseCode: course.code
                                 };
-                                console.log("      Found section: " + section.code);
                                 dbClient.sectionInsert(section);
                             }
                         });
                         callback();
                     }else{
-                        console.log("Connection reset. waiting 5 seconds.");
-                        setTimeout(callback, 5000);
+                        console.log("error: " + error);
+                        console.log("Possible connection reset. waiting 5 seconds.");
+                        setTimeout(function () {
+                            console.log("restarting...");
+                            callback();
+                        }, 5000);
                     }
                 })
             }, function () {
