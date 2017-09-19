@@ -35,7 +35,7 @@ app.get('/scrape', function(req, res){
         blocked = true;
         res.sendStatus(202);
         var startTime = new Date().toLocaleString();
-        console.log("Scrape request received from: " + req.get("host") + " for " + req.query.size + " departments.");
+        console.log("Scrape request received from: " + req.get("host") + " for " + (req.query.size || "all") + " departments.");
         scraper.mine(req.query.size, callback);
         function callback() {
             var endTime = new Date().toLocaleString();
