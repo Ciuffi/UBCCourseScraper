@@ -8,12 +8,11 @@
 </head>
 <body>
 <script>
-    window.onload = function () {
+    function update() {
         lastScrape();
         scrapeStatus();
-        setInterval(lastScrape, 15000);
-        setInterval(scrapeStatus, 15000);
-    };
+    }
+    window.onload = update();
     function lastScrape() {
         $.get("/getLastScrapeTime", function (res) {
             $("#lastScrapeId").get(0).innerText = "Last Scrape: " + res;
@@ -64,6 +63,7 @@
 <h3>Scraper</h3>
 <p id="lastScrapeId">Last Scrape: </p>
 <p id="scrapeStatus">Scrape Status: </p>
+<button onclick="update()">Update</button>
 <h4>Database Accessor</h4>
 <label for="search">Code: </label>
 <input id="search"/>

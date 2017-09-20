@@ -12,7 +12,6 @@ app.get('/getLastScrapeTime', function (req, res) {
     if (!blocked){
         dbClient.getLastTime(returnResult);
     }else{
-        console.log("Last Time: " + lastTime);
         returnResult(lastTime);
     }
     function returnResult(result) {
