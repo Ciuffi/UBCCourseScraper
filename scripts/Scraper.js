@@ -102,7 +102,6 @@ module.exports.mine = function(size, callback) {
                                     start = moment(section.startTime, "HH:mm");
                                     length = moment.duration(end.diff(start)).asMinutes();
                                     section.length = length +" minutes";
-                                    console.log("Length for: " + section.code + " is: " + section.length);
                                     dbClient.sectionInsert(section);
                                 }else{
                                     dbClient.sectionInsert(section);
