@@ -2,6 +2,7 @@ var request = require('request');
 var cheerio = require('cheerio');
 var async = require('async');
 var dbClient = require('./dbClient.js');
+var moment = require('moment');
 var base_uri = 'https://courses.students.ubc.ca';
 module.exports.mine = function(size, callback) {
     console.time("scrape");
@@ -36,6 +37,7 @@ module.exports.mine = function(size, callback) {
                             faculty: $(this).children('td').eq(2).text().trim(),
                             courses: null
                         };
+                        console.log("Mined department: " + department.code +":"+ department.name);
                         departments.push(department);
                         dbClient.departmentInsert(department);
                     }
@@ -95,7 +97,16 @@ module.exports.mine = function(size, callback) {
                                     endTime: $(this).children('td').eq(7).text().trim(),
                                     courseCode: course.code
                                 };
-                                dbClient.sectionInsert(section);
+                                if (section.startTime && section.endTime){
+                                    end = moment(section.endTime, "HH:mm");
+                                    start = moment(section.startTime, "HH:mm");
+                                    length = moment.duration(end.diff(start)).asMinutes();
+                                    section.length = length +" minutes";
+                                    console.log("Length for: " + section.code + " is: " + section.length);
+                                    dbClient.sectionInsert(section);
+                                }else{
+                                    dbClient.sectionInsert(section);
+                                }
                             }
                         });
                         callback();

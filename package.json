@@ -9,7 +9,8 @@
     "cheerio": "latest",
     "express": "latest",
     "pg": "latest",
-    "request": "latest"
+    "request": "latest",
+    "moment": "latest"
   },
   "scripts": {
     "start": "node server.js"
