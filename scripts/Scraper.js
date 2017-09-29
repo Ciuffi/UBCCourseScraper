@@ -128,3 +128,13 @@ module.exports.mine = function(size, callback) {
         })
     }
 };
+// module.exports.readSectionPage = function (url) {
+//     request(url, function (error, response, html) {
+//         if (!error){
+//             var $ = cheerio.load(html);
+//
+//
+//         }
+//     })
+//
+// };
