@@ -37,7 +37,6 @@ module.exports.mine = function(size, callback) {
                             faculty: $(this).children('td').eq(2).text().trim(),
                             courses: null
                         };
-                        console.log("Mined department: " + department.code +":"+ department.name);
                         departments.push(department);
                         dbClient.departmentInsert(department);
                     }
