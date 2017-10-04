@@ -9,7 +9,7 @@ var lastTime;
 
 app.get("/fullSectionUpdate", function (req, res) {
     console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + "; Request for full section scrape from: " + req.ip);
-    scraper.updateAllSectionData(req.query.size);
+    scraper.updateAllSectionData();
     res.sendStatus(202);
 });
 

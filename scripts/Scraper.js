@@ -158,18 +158,19 @@ module.exports.readSectionPage = function (url, code, callback) {
     })
 };
 
-module.exports.updateAllSectionData = function (size) {
+module.exports.updateAllSectionData = function () {
+    console.time("sectionScrape");
+    console.log("Beginning full section update...");
     dbClient.getAllSections(function (sections) {
-        if (size){
-            sections = sections.slice(0, size)
-        }
+        console.log("Found " + sections.length + " sections...");
         async.forEachSeries(sections, function (section, callback) {
             module.exports.readSectionPage(section.URL, section.Code, function () {
                 callback();
-                console.log("finished: " + section.Code);
             })
         }, function () {
-            console.log("Full section update complete.")
+            console.log("Full section update complete.");
+            console.timeEnd("sectionScrape");
+
         })
     })
 
