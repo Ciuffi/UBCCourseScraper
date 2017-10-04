@@ -133,15 +133,22 @@ module.exports.readSectionPage = function (url, code, callback) {
         if (!error){
             var $ = cheerio.load(html);
             title = $('.table-striped').children('thead').children('tr').children('th').eq(0);
+            seatingtable = $('table').eq(3);
             if (title.text()==="Term"){
                 var SectionPage = {
                     code: code,
                     building: $('.table-striped').children('tbody').children('tr').children('td').eq(4).text(),
                     room: $('.table-striped').children('tbody').children('tr').children('td').eq(5).text().trim(),
-                    teacher: $('.table-striped').next().children('tbody').children('tr').children('td').eq(1).text().trim()
+                    teacher: $('.table-striped').next().children('tbody').children('tr').children('td').eq(1).text().trim(),
+                };
+                var seatingInfo = {
+                    totalSeatsRemain: seatingtable.children('tbody').children('tr').eq(0).children('td').eq(1).children('strong').text().trim(),
+                    currentlyRegistered: seatingtable.children('tbody').children('tr').eq(1).children('td').eq(1).children('strong').text().trim(),
+                    generalSeatsRemain: seatingtable.children('tbody').children('tr').eq(2).children('td').eq(1).children('strong').text().trim(),
+                    restrictedSeatsRemaining: seatingtable.children('tbody').children('tr').eq(3).children('td').eq(1).children('strong').text().trim()
                 };
                 dbClient.updatedSectionInsert(SectionPage);
-                callback(SectionPage);
+                callback(seatingInfo);
             }else{
                 callback();
             }
@@ -156,7 +163,7 @@ module.exports.updateAllSectionData = function (size) {
         if (size){
             sections = sections.slice(0, size)
         }
-        async.forEach(sections, function (section, callback) {
+        async.forEachSeries(sections, function (section, callback) {
             module.exports.readSectionPage(section.URL, section.Code, function () {
                 callback();
                 console.log("finished: " + section.Code);
