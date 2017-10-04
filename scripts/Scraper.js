@@ -128,13 +128,23 @@ module.exports.mine = function(size, callback) {
         })
     }
 };
-// module.exports.readSectionPage = function (url) {
-//     request(url, function (error, response, html) {
-//         if (!error){
-//             var $ = cheerio.load(html);
-//
-//
-//         }
-//     })
-//
-// };
+module.exports.readSectionPage = function (url, code, callback) {
+    console.log("reading..");
+    request(url, function (error, response, html) {
+        if (!error){
+            var $ = cheerio.load(html);
+            title = $('.table-striped').children('thead').children('tr').children('th').eq(0);
+            if (title.text()==="Term"){
+                console.log("great success");
+                var SectionPage = {
+                    code: code,
+                    building: $('.table-striped').children('tbody').children('tr').children('td').eq(4).text(),
+                    room: $('.table-striped').children('tbody').children('tr').children('td').eq(5).text().trim(),
+                    teacher: $('.table-striped').next().children('tbody').children('tr').children('td').eq(1).text().trim()
+                };
+                dbClient.updatedSectionInsert(SectionPage);
+                callback(SectionPage);
+            }
+        }
+    })
+};

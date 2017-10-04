@@ -6,6 +6,20 @@ var app      = express();
 var blocked = false;
 var lastTime;
 
+
+
+app.get("/sectionData", function (req, res) {
+    dbClient.getSectionsByCode(req.query.code, function (sections) {
+        if (sections.length === 1){
+            scraper.readSectionPage(sections.get(0).url,
+                sections.get(0).code,
+                function (newInfo) {
+                    res.send(newInfo);
+                });
+        }
+    })
+})
+
 app.get("/", function (req, res) {
     res.sendFile(__dirname + "/HTML/index.html");
     console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + "; Site access from: " + req.ip);
@@ -93,7 +107,7 @@ app.get('/getSectionsByCode', function (req, res) {
         res.send(result);
     }
 });
-var port =  8080;
+var port =  8081;
 app.listen(port);
 
 console.log('Magic happens on port ' + port);

@@ -114,6 +114,18 @@ module.exports.sectionInsert = function (section) {
     })
 };
 
+module.exports.updatedSectionInsert = function (section) {
+    var queryText = 'UPDATE "Sections" ' +
+        'SET "Teacher"=$2, "Building"=$3, "Room"=$4 ' +
+        'WHERE "Code"=$1';
+    var values = [section.code, section.teacher, section.building, section.room];
+    client.query(queryText, values, function (err, res) {
+        if (err) {
+            console.log(err)
+        }
+    })
+};
+
 module.exports.getCoursesByCode = function (code, callback) {
     var queryText = 'SELECT * FROM "Courses" WHERE "Code" LIKE  $1';
     var values = ['%' + code + '%'];
