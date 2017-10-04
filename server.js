@@ -7,18 +7,30 @@ var blocked = false;
 var lastTime;
 
 
+app.get("/fullSectionUpdate", function (req, res) {
+    console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + "; Request for full section scrape from: " + req.ip);
+    scraper.updateAllSectionData(req.query.size);
+    res.sendStatus(202);
+});
+
 
 app.get("/sectionData", function (req, res) {
+    console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + "; Request for updated section info by code: " + req.query.code +" from: " + req.ip);
     dbClient.getSectionsByCode(req.query.code, function (sections) {
+        sections = JSON.parse(sections);
         if (sections.length === 1){
-            scraper.readSectionPage(sections.get(0).url,
-                sections.get(0).code,
+            scraper.readSectionPage(sections[0].URL,
+                sections[0].Code,
                 function (newInfo) {
-                    res.send(newInfo);
+                dbClient.getSectionsByCode(newInfo.code, function (section) {
+                    res.send(section);
+                })
                 });
+        }else{
+            res.send("Improper code! must be a full section code.");
         }
     })
-})
+});
 
 app.get("/", function (req, res) {
     res.sendFile(__dirname + "/HTML/index.html");
@@ -104,10 +116,11 @@ app.get('/getSectionsByCode', function (req, res) {
         res.send("No code!")
     }
     function returnResult(result) {
+        console.log(result);
         res.send(result);
     }
 });
-var port =  8081;
+var port =  8080;
 app.listen(port);
 
 console.log('Magic happens on port ' + port);

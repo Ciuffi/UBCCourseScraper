@@ -153,3 +153,16 @@ module.exports.getSectionsByCode = function (code, callback) {
         }
     })
 };
+
+module.exports.getAllSections = function (callback) {
+    var queryText = 'SELECT * FROM "Sections"';
+    client.query(queryText, function (err, res) {
+        if (err) {
+            console.log(err);
+        }else if (res.rowCount >= 1){
+            callback(res.rows);
+        }else{
+            callback("Not found :(");
+        }
+    })
+};

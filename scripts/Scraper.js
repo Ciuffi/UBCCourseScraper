@@ -129,13 +129,11 @@ module.exports.mine = function(size, callback) {
     }
 };
 module.exports.readSectionPage = function (url, code, callback) {
-    console.log("reading..");
-    request(url, function (error, response, html) {
+    request(base_uri + url, function (error, response, html) {
         if (!error){
             var $ = cheerio.load(html);
             title = $('.table-striped').children('thead').children('tr').children('th').eq(0);
             if (title.text()==="Term"){
-                console.log("great success");
                 var SectionPage = {
                     code: code,
                     building: $('.table-striped').children('tbody').children('tr').children('td').eq(4).text(),
@@ -144,7 +142,28 @@ module.exports.readSectionPage = function (url, code, callback) {
                 };
                 dbClient.updatedSectionInsert(SectionPage);
                 callback(SectionPage);
+            }else{
+                callback();
             }
+        }else{
+            console.log(error);
         }
     })
+};
+
+module.exports.updateAllSectionData = function (size) {
+    dbClient.getAllSections(function (sections) {
+        if (size){
+            sections = sections.slice(0, size)
+        }
+        async.forEach(sections, function (section, callback) {
+            module.exports.readSectionPage(section.URL, section.Code, function () {
+                callback();
+                console.log("finished: " + section.Code);
+            })
+        }, function () {
+            console.log("Full section update complete.")
+        })
+    })
+
 };

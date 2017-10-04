@@ -58,6 +58,14 @@
             PR.prettyPrint();
         })
     }
+    function updateSectionInfo() {
+        code = $('#search')[0].value;
+        $.get("/sectionData", {code: code}, function (res) {
+            $("#result")[0].innerText = res;
+            $("#result").removeClass("prettyprinted");
+            PR.prettyPrint();
+        })
+    }
 </script>
 <h1>UBC Course Scraper and Database Accessor (Alpha)</h1>
 <h3>Scraper</h3>
@@ -73,6 +81,7 @@
 <button onclick="getDepartmentByCode()">Get Department By Code</button>
 <button onclick="getCoursesByCode()">Get Courses By Code</button>
 <button onclick="getSectionsByCode()">Get Sections By Code</button>
+<button onclick="updateSectionInfo()">Update section info</button>
 <br>
 <pre class="prettyprint lang-json" id="result"></pre>
 </body>
