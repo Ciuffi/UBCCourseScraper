@@ -152,7 +152,8 @@ module.exports.readSectionPage = function (url, code, callback) {
                 callback();
             }
         }else{
-            console.log(error);
+            console.log("An error occurred: trying again in 5 seconds" + error);
+            setTimeout(module.exports.readSectionPage(url, code, callback), 5000);
         }
     })
 };
