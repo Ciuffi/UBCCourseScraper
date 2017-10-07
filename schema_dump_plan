@@ -5,7 +5,7 @@
 -- Dumped from database version 9.6.5
 -- Dumped by pg_dump version 10.0
 
--- Started on 2017-10-07 02:18:18 PDT
+-- Started on 2017-10-07 02:40:14 PDT
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -136,9 +136,9 @@ CREATE TABLE "Sections" (
     "Room" character varying,
     "Days" character varying,
     "Type" character varying,
-    "TotalSeatsRemaing" character varying,
+    "TotalSeatsRemaining" character varying,
     "CurrentlyRegistered" character varying,
-    "GeneralSeatsRemaing" character varying,
+    "GeneralSeatsRemaining" character varying,
     "RestrictedSeatsRemaining" character varying
 );
 
@@ -275,7 +275,7 @@ ALTER TABLE ONLY "scrapeTimes"
     ADD CONSTRAINT "scrapeTimes_pkey" PRIMARY KEY ("ID");
 
 
--- Completed on 2017-10-07 02:18:19 PDT
+-- Completed on 2017-10-07 02:40:14 PDT
 
 --
 -- PostgreSQL database dump complete
