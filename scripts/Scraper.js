@@ -141,12 +141,12 @@ module.exports.readSectionPage = function (url, code, callback) {
                     teacher: $('.table-striped').next().children('tbody').children('tr').children('td').eq(1).text().trim(),
                 };
                 var seatingInfo = {
-                    totalSeatsRemain: seatingtable.children('tbody').children('tr').eq(0).children('td').eq(1).children('strong').text().trim(),
+                    totalSeatsRemaining: seatingtable.children('tbody').children('tr').eq(0).children('td').eq(1).children('strong').text().trim(),
                     currentlyRegistered: seatingtable.children('tbody').children('tr').eq(1).children('td').eq(1).children('strong').text().trim(),
-                    generalSeatsRemain: seatingtable.children('tbody').children('tr').eq(2).children('td').eq(1).children('strong').text().trim(),
+                    generalSeatsRemaining: seatingtable.children('tbody').children('tr').eq(2).children('td').eq(1).children('strong').text().trim(),
                     restrictedSeatsRemaining: seatingtable.children('tbody').children('tr').eq(3).children('td').eq(1).children('strong').text().trim()
                 };
-                dbClient.updatedSectionInsert(SectionPage);
+                dbClient.updatedSectionInsert(Object.assign(SectionPage, seatingInfo));
                 callback(seatingInfo);
             }else{
                 callback();

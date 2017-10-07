@@ -116,9 +116,9 @@ module.exports.sectionInsert = function (section) {
 
 module.exports.updatedSectionInsert = function (section) {
     var queryText = 'UPDATE "Sections" ' +
-        'SET "Teacher"=$2, "Building"=$3, "Room"=$4 ' +
+        'SET "Teacher"=$2, "Building"=$3, "Room"=$4, "TotalSeatsRemaining"=$5, "CurrentlyRegistered"=$6, "GeneralSeatsRemaining"=$7, "RestrictedSeatsRemaining"=$8 ' +
         'WHERE "Code"=$1';
-    var values = [section.code, section.teacher, section.building, section.room];
+    var values = [section.code, section.teacher, section.building, section.room, section.totalSeatsRemaining, section.currentlyRegistered, section.generalSeatsRemaining, section.restrictedSeatsRemaining];
     client.query(queryText, values, function (err, res) {
         if (err) {
             console.log(err)
