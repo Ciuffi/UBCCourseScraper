@@ -21,7 +21,7 @@ app.get("/sectionData", function (req, res) {
         if (sections.length === 1){
             scraper.readSectionPage(sections[0].URL, sections[0].Code, function () {
                 dbClient.getSectionsByCode(req.query.code, function (section) {
-                    res.send(JSON.stringify(section, null, 4));
+                    res.send(section);
                 })
                 });
         }else{

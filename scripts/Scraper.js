@@ -139,21 +139,21 @@ module.exports.readSectionPage = function (url, code, callback) {
                     building: $('.table-striped').children('tbody').children('tr').children('td').eq(4).text(),
                     room: $('.table-striped').children('tbody').children('tr').children('td').eq(5).text().trim(),
                     teacher: $('.table-striped').next().children('tbody').children('tr').children('td').eq(1).text().trim(),
-                };
-                var seatingInfo = {
                     totalSeatsRemaining: seatingtable.children('tbody').children('tr').eq(0).children('td').eq(1).children('strong').text().trim(),
                     currentlyRegistered: seatingtable.children('tbody').children('tr').eq(1).children('td').eq(1).children('strong').text().trim(),
                     generalSeatsRemaining: seatingtable.children('tbody').children('tr').eq(2).children('td').eq(1).children('strong').text().trim(),
                     restrictedSeatsRemaining: seatingtable.children('tbody').children('tr').eq(3).children('td').eq(1).children('strong').text().trim()
                 };
-                dbClient.updatedSectionInsert(Object.assign(SectionPage, seatingInfo));
-                callback(seatingInfo);
+                dbClient.updatedSectionInsert(SectionPage);
+                callback(SectionPage);
             }else{
                 callback();
             }
         }else{
-            console.log("An error occurred: trying again in 5 seconds" + error);
-            setTimeout(module.exports.readSectionPage(url, code, callback), 5000);
+            console.log("An error occurred, probably a connection reset. Waiting for  5 seconds");
+            setTimeout(function () {
+                module.exports.readSectionPage(url, code, callback);
+            }, 5000);
         }
     })
 };
