@@ -117,6 +117,7 @@ app.get('/getSectionsByCode', function (req, res) {
         res.send(result);
     }
 });
+dbClient.connectDB();
 var port =  8080;
 app.listen(port);
 

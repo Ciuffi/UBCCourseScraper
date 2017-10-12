@@ -1,20 +1,19 @@
 var pg = require('pg');
 var client = new pg.Client({
     connectionString: process.env.DATABASE_URL,
-    ssl: true
+    ssl: false
 });
-client.connect(function (error) {
-    if (error){
-        client.end();
-        client = new pg.Client({
-            connectionString: process.env.DATABASE_URL,
-            ssl: false
-        });
-        client.connect(function (error) {
-            console.log(error || "DB connected.");
-        });
-    }
-});
+
+module.exports.connectDB = function() {
+    client.connect(function (error) {
+        if (error){
+            console.log("Failed to connect to Database, trying again in 5 seconds..");
+            setTimeout(connectDB, 5000);
+        }else{
+            console.log("Database connected!")
+        }
+    });
+};
 
 module.exports.timeInsert = function (startTime, endTime) {
     var queryText = 'INSERT INTO "scrapeTimes"("startDate", "endDate") VALUES($1, $2)';
