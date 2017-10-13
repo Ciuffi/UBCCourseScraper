@@ -8,7 +8,7 @@ module.exports.connectDB = function() {
     client.connect(function (error) {
         if (error){
             console.log("Failed to connect to Database, trying again in 5 seconds..");
-            setTimeout(connectDB, 5000);
+            setTimeout(module.exports.connectDB, 5000);
         }else{
             console.log("Database connected!")
         }
