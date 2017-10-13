@@ -72,7 +72,7 @@ app.get("/sectionData", function (req, res) {
 });
 
 app.get("/", function (req, res) {
-    res.sendFile(__dirname + "/HTML/index.html");
+    res.sendFile(__dirname + "/html/index.html");
     console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + "; Site access from: " + req.ip);
 });
 app.get('/getLastScrapeTime', function (req, res) {
