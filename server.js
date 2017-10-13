@@ -5,7 +5,14 @@ var moment = require("moment");
 var app      = express();
 var blocked = false;
 var lastTime;
+app.set('views', './views');
+app.set('view engine', 'pug');
 
+app.get("/test", function (req, res) {
+    dbClient.getDepartments(function (deps) {
+        res.render('index', {departments:JSON.parse(deps)});
+    })
+});
 
 app.get("/fullSectionUpdate", function (req, res) {
     if (!blocked){

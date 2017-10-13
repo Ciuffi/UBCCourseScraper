@@ -8,9 +8,10 @@
     "async": "latest",
     "cheerio": "latest",
     "express": "latest",
+    "moment": "latest",
     "pg": "latest",
-    "request": "latest",
-    "moment": "latest"
+    "pug": "^2.0.0-rc.4",
+    "request": "latest"
   },
   "scripts": {
     "start": "node server.js"
