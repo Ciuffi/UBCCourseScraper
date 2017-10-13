@@ -1,0 +1,26 @@
+html
+    head
+        style
+            include css/basic.css
+        title="Section Page"
+    body
+        h1(style="text-align: center;")="Sections table for " + code
+    div
+        table
+            thead
+                tr
+                    th Code
+                    th Type
+                    th Term
+                    th Days
+                    th Start Time
+                    th End Time
+            tbody
+                each sect in sections
+                    tr
+                        td=sect.Code
+                        td=sect.Type
+                        td=sect.Term
+                        td=sect.Days
+                        td=sect['Start Time']
+                        td=sect['End Time']

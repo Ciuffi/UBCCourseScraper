@@ -8,10 +8,36 @@ var lastTime;
 app.set('views', './views');
 app.set('view engine', 'pug');
 
-app.get("/test", function (req, res) {
+app.get("/Departments", function (req, res) {
     dbClient.getDepartments(function (deps) {
-        res.render('index', {departments:JSON.parse(deps)});
+        res.render('departments', {departments:JSON.parse(deps)});
     })
+});
+app.get("/Courses", function (req, res) {
+    if (req.query.code){
+        dbClient.getCoursesByCode(req.query.code, function (courses) {
+            if (courses==="Not found :("){
+                res.send("No course with this code.");
+            }else{
+                res.render('courses', {code: req.query.code, courses:JSON.parse(courses)});
+            }
+        })
+    }else{
+        res.sendStatus(503);
+    }
+});
+app.get("/Sections", function (req, res) {
+    if (req.query.code){
+        dbClient.getSectionsByCode(req.query.code, function (sections) {
+            if (sections==="Not found :("){
+                res.send("No section with this code.");
+            }else{
+                res.render('sections', {code: req.query.code, sections:JSON.parse(sections)});
+            }
+        })
+    }else{
+        res.sendStatus(503);
+    }
 });
 
 app.get("/fullSectionUpdate", function (req, res) {
