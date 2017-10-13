@@ -8,9 +8,17 @@ var lastTime;
 
 
 app.get("/fullSectionUpdate", function (req, res) {
-    console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + "; Request for full section scrape from: " + req.ip);
-    scraper.updateAllSectionData();
-    res.sendStatus(202);
+    if (!blocked){
+        console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + "; Request for full section scrape from: " + req.ip);
+        blocked = true;
+        scraper.updateAllSectionData(function () {
+            blocked = false;
+        });
+        res.sendStatus(202);
+    }else{
+        res.sendStatus(503);
+    }
+
 });
 
 

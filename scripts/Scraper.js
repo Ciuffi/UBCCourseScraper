@@ -158,7 +158,7 @@ module.exports.readSectionPage = function (url, code, callback) {
     })
 };
 
-module.exports.updateAllSectionData = function () {
+module.exports.updateAllSectionData = function (callback) {
     console.time("sectionScrape");
     console.log("Beginning full section update...");
     dbClient.getAllSections(function (sections) {
@@ -170,6 +170,7 @@ module.exports.updateAllSectionData = function () {
         }, function () {
             console.log("Full section update complete.");
             console.timeEnd("sectionScrape");
+            callback();
 
         })
     })
