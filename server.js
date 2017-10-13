@@ -5,7 +5,7 @@ var moment = require("moment");
 var app      = express();
 var blocked = false;
 var lastTime;
-app.set('views', './views');
+app.set('views', __dirname + '/views/');
 app.set('view engine', 'pug');
 
 app.get("/Departments", function (req, res) {
