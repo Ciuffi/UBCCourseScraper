@@ -60,7 +60,7 @@ module.exports.getDepartmentByCode = function (code, callback) {
         if (err) {
             console.log(err);
         }else if (res.rowCount >= 1){
-            callback(JSON.stringify(res.rows[0], null, 4));
+            callback(res.rows[0]);
         }else{
             callback("Not found :(");
         }
@@ -72,7 +72,7 @@ module.exports.getDepartments = function (callback) {
         if (err) {
             console.log(err);
         }else if (res.rowCount >= 1){
-            callback(JSON.stringify(res.rows, null, 4));
+            callback(res.rows);
         }
     })
 };
@@ -132,7 +132,7 @@ module.exports.getCoursesByCode = function (code, callback) {
         if (err) {
             console.log(err);
         }else if (res.rowCount >= 1){
-            callback(JSON.stringify(res.rows, null, 4));
+            callback(res.rows);
         }else{
             callback("Not found :(");
         }
@@ -146,7 +146,7 @@ module.exports.getSectionsByCode = function (code, callback) {
         if (err) {
             console.log(err);
         }else if (res.rowCount >= 1){
-             callback(JSON.stringify(res.rows, null, 4));
+             callback(res.rows);
         }else{
             callback("Not found :(");
         }
