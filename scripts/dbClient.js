@@ -146,7 +146,7 @@ module.exports.getSectionsByCode = function (code, callback) {
         if (err) {
             console.log(err);
         }else if (res.rowCount >= 1){
-            callback(JSON.stringify(res.rows, null, 4));
+             callback(JSON.stringify(res.rows, null, 4));
         }else{
             callback("Not found :(");
         }

@@ -5,7 +5,40 @@ var moment = require("moment");
 var app      = express();
 var blocked = false;
 var lastTime;
+app.set('views', __dirname + '/views/');
+app.set('view engine', 'pug');
 
+app.get("/Departments", function (req, res) {
+    dbClient.getDepartments(function (deps) {
+        res.render('departments', {departments:JSON.parse(deps)});
+    })
+});
+app.get("/Courses", function (req, res) {
+    if (req.query.code){
+        dbClient.getCoursesByCode(req.query.code, function (courses) {
+            if (courses==="Not found :("){
+                res.send("No course with this code.");
+            }else{
+                res.render('courses', {code: req.query.code, courses:JSON.parse(courses)});
+            }
+        })
+    }else{
+        res.sendStatus(503);
+    }
+});
+app.get("/Sections", function (req, res) {
+    if (req.query.code){
+        dbClient.getSectionsByCode(req.query.code, function (sections) {
+            if (sections==="Not found :("){
+                res.send("No section with this code.");
+            }else{
+                res.render('sections', {code: req.query.code, sections:JSON.parse(sections)});
+            }
+        })
+    }else{
+        res.sendStatus(503);
+    }
+});
 
 app.get("/fullSectionUpdate", function (req, res) {
     if (!blocked){
@@ -39,7 +72,7 @@ app.get("/sectionData", function (req, res) {
 });
 
 app.get("/", function (req, res) {
-    res.sendFile(__dirname + "/HTML/index.html");
+    res.sendFile(__dirname + "/html/index.html");
     console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + "; Site access from: " + req.ip);
 });
 app.get('/getLastScrapeTime', function (req, res) {
