@@ -161,6 +161,6 @@ dbClient.connectDB();
 var port =  8080;
 app.listen(port);
 
-console.log('Magic happens on port ' + port);
+console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + ': Magic happens on port ' + port);
 
 exports = module.exports = app;

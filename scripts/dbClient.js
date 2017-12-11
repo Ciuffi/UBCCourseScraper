@@ -1,4 +1,5 @@
 var pg = require('pg');
+var moment = require("moment");
 var client = new pg.Client({
     connectionString: process.env.DATABASE_URL,
     ssl: false
@@ -7,10 +8,10 @@ var client = new pg.Client({
 module.exports.connectDB = function() {
     client.connect(function (error) {
         if (error){
-            console.log("Failed to connect to Database, trying again in 5 seconds..");
+            console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + ": Failed to connect to Database, trying again in 5 seconds..");
             setTimeout(module.exports.connectDB, 5000);
         }else{
-            console.log("Database connected!")
+            console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + ": Database connected!")
         }
     });
 };
