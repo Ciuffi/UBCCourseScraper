@@ -85,5 +85,56 @@
 <button onclick="updateSectionInfo()">Update section info</button>
 <br>
 <pre class="prettyprint lang-json" id="result"></pre>
+<h4> API Access</h4>
+<p>You use the information stored by this app in your own program through the API provided here.</p>
+        <b>/getDepartments</b> List of all departments
+        returns a list of all the departments as json objects that looks like this:
+        <br>
+<pre>
+    {
+        Name: String
+        Code: String
+        URL: String
+        Faculty: String
+    }
+    </pre>
+        <b>/getDepartmentByCode</b> List of courses by department code
+        returns a department specified with a 'code' parameter in the post message:
+<pre>
+    {
+        Name: String
+        Code: String
+        URL: String
+        Faculty: String
+    }
+    </pre>
+        <b>/getCoursesByCode</b> List of courses by department code
+        returns a list of all the courses in a department specified with a 'code' parameter in the post message:
+<pre>
+    {
+        Name: String
+        Code: String
+        URL: String
+    }
+    </pre>
+        <b>/getSectionsByCode</b> List of sections by course code
+        returns a list of all the sections ina course specified with a 'code' parameter in the post message:
+<pre>
+    {
+        Code: String
+        Teacher: String
+        Building: String
+        Room: String
+        TotalSeatsRemaining: int
+        CurrentlyRegistered: int
+        GeneralSeatsRemaining: int
+        RestrictedSeatsRemaining: int
+    }
+    </pre>
+        <b>/getLastScrapeTime</b> Returns the last time the database was updated.
+<br>
+<br>
+<br>
+<a href="https://github.com/Ciuffi/UBCCourseScraper">Github</a>
 </body>
 </html>
