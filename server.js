@@ -41,7 +41,7 @@ app.get("/Sections", function (req, res) {
 });
 
 app.get("/fullSectionUpdate", function (req, res) {
-    if (!blocked && req.ip === "127.0.0.1"){
+    if (!blocked && (req.ip === "127.0.0.1" || req.ip === "::ffff:127.0.0.1")){
         console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + "; Request for full section scrape from: " + req.ip);
         blocked = true;
         scraper.updateAllSectionData(function () {
@@ -94,7 +94,7 @@ app.get('/scrapeStatus', function (req, res) {
     res.send(blocked);
 });
 app.get('/scrape', function(req, res){
-    if (!blocked && req.ip === "127.0.0.1") {
+    if (!blocked && (req.ip === "127.0.0.1" || req.ip === "::ffff:127.0.0.1")) {
         dbClient.getLastTime(function (result) {
             lastTime = result;
         });
