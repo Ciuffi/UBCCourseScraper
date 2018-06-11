@@ -1,4 +1,5 @@
 var pg = require('pg');
+var moment = require("moment");
 var client = new pg.Client({
     connectionString: process.env.DATABASE_URL,
     ssl: false
@@ -7,10 +8,10 @@ var client = new pg.Client({
 module.exports.connectDB = function() {
     client.connect(function (error) {
         if (error){
-            console.log("Failed to connect to Database, trying again in 5 seconds..");
+            console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + ": Failed to connect to Database, trying again in 5 seconds..");
             setTimeout(module.exports.connectDB, 5000);
         }else{
-            console.log("Database connected!")
+            console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + ": Database connected!")
         }
     });
 };
@@ -60,7 +61,7 @@ module.exports.getDepartmentByCode = function (code, callback) {
         if (err) {
             console.log(err);
         }else if (res.rowCount >= 1){
-            callback(JSON.stringify(res.rows[0], null, 4));
+            callback(res.rows[0]);
         }else{
             callback("Not found :(");
         }
@@ -72,7 +73,7 @@ module.exports.getDepartments = function (callback) {
         if (err) {
             console.log(err);
         }else if (res.rowCount >= 1){
-            callback(JSON.stringify(res.rows, null, 4));
+            callback(res.rows);
         }
     })
 };
@@ -132,7 +133,7 @@ module.exports.getCoursesByCode = function (code, callback) {
         if (err) {
             console.log(err);
         }else if (res.rowCount >= 1){
-            callback(JSON.stringify(res.rows, null, 4));
+            callback(res.rows);
         }else{
             callback("Not found :(");
         }
@@ -146,7 +147,7 @@ module.exports.getSectionsByCode = function (code, callback) {
         if (err) {
             console.log(err);
         }else if (res.rowCount >= 1){
-             callback(JSON.stringify(res.rows, null, 4));
+             callback(res.rows);
         }else{
             callback("Not found :(");
         }

@@ -10,7 +10,7 @@ app.set('view engine', 'pug');
 
 app.get("/Departments", function (req, res) {
     dbClient.getDepartments(function (deps) {
-        res.render('departments', {departments:JSON.parse(deps)});
+        res.render('departments', {departments:deps});
     })
 });
 app.get("/Courses", function (req, res) {
@@ -19,7 +19,7 @@ app.get("/Courses", function (req, res) {
             if (courses==="Not found :("){
                 res.send("No course with this code.");
             }else{
-                res.render('courses', {code: req.query.code, courses:JSON.parse(courses)});
+                res.render('courses', {code: req.query.code, courses:courses});
             }
         })
     }else{
@@ -32,7 +32,7 @@ app.get("/Sections", function (req, res) {
             if (sections==="Not found :("){
                 res.send("No section with this code.");
             }else{
-                res.render('sections', {code: req.query.code, sections:JSON.parse(sections)});
+                res.render('sections', {code: req.query.code, sections:sections});
             }
         })
     }else{
@@ -58,7 +58,6 @@ app.get("/fullSectionUpdate", function (req, res) {
 app.get("/sectionData", function (req, res) {
     console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + "; Request for updated section info by code: " + req.query.code +" from: " + req.ip);
     dbClient.getSectionsByCode(req.query.code, function (sections) {
-        sections = JSON.parse(sections);
         if (sections.length === 1){
             scraper.readSectionPage(sections[0].URL, sections[0].Code, function () {
                 dbClient.getSectionsByCode(req.query.code, function (section) {
@@ -116,7 +115,7 @@ app.get('/scrape', function(req, res){
 app.get('/getDepartments', function (req, res) {
     dbClient.getDepartments(returnResult);
     function returnResult(result) {
-        res.send(result);
+        res.send(JSON.stringify(result, null, 4));
     }
     console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + "; All Department Request from: " + req.ip);
 });
@@ -130,7 +129,7 @@ app.get('/getDepartmentByCode', function (req, res) {
     }
 
     function returnResult(result) {
-        res.send(result);
+        res.send(JSON.stringify(result, null, 4));
     }
 });
 
@@ -143,7 +142,7 @@ app.get('/getCoursesByCode', function (req, res) {
     }
 
     function returnResult(result) {
-        res.send(result);
+        res.send(JSON.stringify(result, null, 4));
     }
 });
 
@@ -155,13 +154,13 @@ app.get('/getSectionsByCode', function (req, res) {
         res.send("No code!")
     }
     function returnResult(result) {
-        res.send(result);
+        res.send(JSON.stringify(result, null, 4));
     }
 });
 dbClient.connectDB();
 var port =  8080;
 app.listen(port);
 
-console.log('Magic happens on port ' + port);
+console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + ': Magic happens on port ' + port);
 
 exports = module.exports = app;
