@@ -17,4 +17,4 @@ The database address is hard coded so make sure to change it (under `dbClient.js
 
 The server will throw an error right away if it had trouble connecting to the database.
 
-# **TBC**
+A working version that is kept up to date can be found at: [http://207.6.49.83:8080/](http://207.6.49.83:8080/)
