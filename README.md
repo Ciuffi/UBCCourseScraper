@@ -13,8 +13,8 @@ that information.
 2. Setup a postgres database and import the _schema_dump_ restore file.
 3. To start the server, type `node server.js` in the root directory
 
-The database address is hard coded so make sure to change it (under `dbClient.js`)
+The dbclient connects to the database through a postgres connection string. It will attempt to read this string from an environmental variable called DATABASE_URL
 
 The server will throw an error right away if it had trouble connecting to the database.
 
-A working version that is kept up to date can be found at: [http://207.6.49.83:8080/](http://207.6.49.83:8080/)
+A live version that is kept up to date can be found at: [http://207.6.49.83:8080/](http://207.6.49.83:8080/)
