@@ -66,13 +66,47 @@
             PR.prettyPrint();
         })
     }
+    function showdbinfo() {
+        $(".content").hide();
+        var x = $("#dbinfo")[0];
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+    function showdbaccess() {
+        $(".content").hide();
+        var x = $("#dbaccess")[0];
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+    function showapiaccess() {
+        $(".content").hide();
+        var x = $("#apiaccess")[0];
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
 </script>
 <h1>UBC Course Scraper and Database Accessor (Alpha)</h1>
-<h3>Scraper</h3>
+<p style="word-wrap: break-word;">Welcome to the UBC course database. This website is the home of a third party tool that scrapes and stores all the information on the UBC course website so that it can be easily accessed through an API. Anyone is welcome to use it but please do not spam the server.</p>
+<button onclick="showdbinfo()">database info</button>
+<button onclick="showdbaccess()">database web access</button>
+<button onclick="showapiaccess()">API information</button>
+<div class="content" id="dbinfo" style="display: none">
+<h3>Database information</h3>
 <p id="lastScrapeId">Last Scrape: </p>
 <p id="scrapeStatus">Scrape Status: </p>
 <button onclick="update()">Update</button>
 <button onclick="location.href='/Departments';">Table View</button>
+</div>
+<div class="content" id="dbaccess" style="display: none">
 <h4>Database Accessor</h4>
 <label for="search">Code: </label>
 <input id="search"/>
@@ -85,6 +119,8 @@
 <button onclick="updateSectionInfo()">Update section info</button>
 <br>
 <pre class="prettyprint lang-json" id="result"></pre>
+</div>
+<div class="content" id="apiaccess" style="display: none">
 <h4> API Access</h4>
 <p>You use the information stored by this app in your own program through the API provided here.</p>
         <b>/getDepartments</b> List of all departments
@@ -136,9 +172,8 @@
     }
     </pre>
         <b>/getLastScrapeTime</b> Returns the last time the database was updated.
-<br>
-<br>
-<br>
+</div>
+<br><br>
 <a href="https://github.com/Ciuffi/UBCCourseScraper">Github</a>
 </body>
 </html>
