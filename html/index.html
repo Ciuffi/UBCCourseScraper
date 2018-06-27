@@ -1,98 +1,92 @@
 <!DOCTYPE html>
-<html><head><meta name="GCD" content="YTk3ODQ3ZWZhN2I4NzZmMzBkNTEwYjJl242375df7c2091d5602593fa30137b58"/>
+<html><head><meta name="GCD" content="YTk3ODQ3ZWZhN2I4NzZmMzBkNTEwYjJl2ba8b1b48e10c79226ac5d9354957641"/>
   <meta charset="utf-8">
   <title>UBC Course Database</title>
   <meta name="generator" content="Google Web Designer 4.0.1.0625">
   <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script>
+  <script>
     function update() {
-        lastScrape();
-        scrapeStatus();
+      lastScrape();
+      scrapeStatus();
     }
     window.onload = update();
+
     function lastScrape() {
-        $.get("/getLastScrapeTime", function (res) {
-            $("#lastScrapeId").get(0).innerText = "Last Scrape: " + res;
-        });
+      $.get("/getLastScrapeTime", function(res) {
+        $("#lastScrapeId").get(0).innerText = "Last Scrape: " + res;
+      });
     }
+
     function scrapeStatus() {
-        $.get("/scrapeStatus", function (res) {
-            if (res){
-                $("#scrapeStatus").get(0).innerText = "Scrape Status: Scraping..";
-            }else{
-                $("#scrapeStatus").get(0).innerText = "Scrape Status: Not Scraping";
-            }
-        })
+      $.get("/scrapeStatus", function(res) {
+        if (res) {
+          $("#scrapeStatus").get(0).innerText = "Scrape Status: Scraping..";
+        } else {
+          $("#scrapeStatus").get(0).innerText = "Scrape Status: Not Scraping";
+        }
+      })
     }
+
     function getDepartments() {
-        $.get("/getDepartments", function (res) {
-            $("#result")[0].innerText = res;
-            $("#result").removeClass("prettyprinted");
-            PR.prettyPrint();
-        })
+      $.get("/getDepartments", function(res) {
+        $("#result")[0].innerText = res;
+        $("#result").removeClass("prettyprinted");
+        PR.prettyPrint();
+      })
     }
+
     function getDepartmentByCode() {
-        code = $('#search')[0].value;
-        $.get("/getDepartmentByCode", {code: code}, function (res) {
-            $("#result")[0].innerText = res;
-            $("#result").removeClass("prettyprinted");
-            PR.prettyPrint();
-        })
+      code = $('#search')[0].value;
+      $.get("/getDepartmentByCode", {
+        code: code
+      }, function(res) {
+        $("#result")[0].innerText = res;
+        $("#result").removeClass("prettyprinted");
+        PR.prettyPrint();
+      })
     }
+
     function getCoursesByCode() {
-        code = $('#search')[0].value;
-        $.get("/getCoursesByCode", {code: code}, function (res) {
-            $("#result")[0].innerText = res;
-            $("#result").removeClass("prettyprinted");
-            PR.prettyPrint();
-        })
+      code = $('#search')[0].value;
+      $.get("/getCoursesByCode", {
+        code: code
+      }, function(res) {
+        $("#result")[0].innerText = res;
+        $("#result").removeClass("prettyprinted");
+        PR.prettyPrint();
+      })
     }
+
     function getSectionsByCode() {
-        code = $('#search')[0].value;
-        $.get("/getSectionsByCode", {code: code}, function (res) {
-            $("#result")[0].innerText = res;
-            $("#result").removeClass("prettyprinted");
-            PR.prettyPrint();
-        })
+      code = $('#search')[0].value;
+      $.get("/getSectionsByCode", {
+        code: code
+      }, function(res) {
+        $("#result")[0].innerText = res;
+        $("#result").removeClass("prettyprinted");
+        PR.prettyPrint();
+      })
     }
+
     function updateSectionInfo() {
-        code = $('#search')[0].value;
-        $.get("/sectionData", {code: code}, function (res) {
-            $("#result")[0].innerText = res;
-            $("#result").removeClass("prettyprinted");
-            PR.prettyPrint();
-        })
+      code = $('#search')[0].value;
+      $.get("/sectionData", {
+        code: code
+      }, function(res) {
+        $("#result")[0].innerText = res;
+        $("#result").removeClass("prettyprinted");
+        PR.prettyPrint();
+      })
     }
-    function showdbinfo() {
-        $(".content").hide();
-        var x = $("#dbinfo")[0];
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-        }
+
+    function clearbox() {
+      $("#result")[0].innerText = "";
+      $("#result").removeClass("prettyprinted");
+      PR.prettyPrint();
     }
-    function showdbaccess() {
-        $(".content").hide();
-        var x = $("#dbaccess")[0];
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-        }
-    }
-    function showapiaccess() {
-        $(".content").hide();
-        var x = $("#apiaccess")[0];
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-        }
-    }
-</script>
-    <style type="text/css" id="gwd-text-style">p {
+  </script>
+  <style type="text/css" id="gwd-text-style">p {
     margin: 0px;
 }
 h1 {
@@ -124,14 +118,14 @@ body {
 }
 .gwd-p-u6h5 {
     position: absolute;
-    width: 641px;
-    transform-origin: 324.281px 42.8145px 0px;
-    -webkit-transform-origin: 324.281px 42.8145px 0px;
-    -moz-transform-origin: 324.281px 42.8145px 0px;
     text-align: center;
-    height: 86px;
-    left: 248px;
-    top: 14px;
+    width: 751px;
+    height: 46px;
+    transform-origin: 375.496px 22.9962px 0px;
+    -webkit-transform-origin: 375.496px 22.9962px 0px;
+    -moz-transform-origin: 375.496px 22.9962px 0px;
+    left: 176px;
+    top: 8px;
 }
 .gwd-p-1vlm {
     position: absolute;
@@ -140,40 +134,70 @@ body {
     transform-origin: 382.371px 75.3519px 0px;
     -webkit-transform-origin: 382.371px 75.3519px 0px;
     -moz-transform-origin: 382.371px 75.3519px 0px;
-    left: 77px;
-    top: 110px;
+    left: 60px;
+    top: 54px;
 }
 .gwd-div-190f {
     position: absolute;
     width: 337px;
-    height: 129px;
-    transform-origin: 168.597px 64.7674px 0px;
-    -webkit-transform-origin: 168.597px 64.7674px 0px;
-    -moz-transform-origin: 168.597px 64.7674px 0px;
     text-align: center;
-    left: 29px;
-    top: 212px;
+    height: 83px;
+    transform-origin: 168.577px 41.6788px 0px;
+    -webkit-transform-origin: 168.577px 41.6788px 0px;
+    -moz-transform-origin: 168.577px 41.6788px 0px;
+    left: 10px;
+    top: 101px;
 }
 .gwd-div-17al {
     position: absolute;
+    width: 342px;
+    height: 241px;
+    transform-origin: 171.058px 119.674px 0px;
+    -webkit-transform-origin: 171.058px 119.674px 0px;
+    -moz-transform-origin: 171.058px 119.674px 0px;
     text-align: center;
-    width: 776px;
-    left: 370px;
-    top: 140px;
-    height: 264px;
-    transform-origin: 388.195px 131.111px 0px;
-    -webkit-transform-origin: 388.195px 131.111px 0px;
-    -moz-transform-origin: 388.195px 131.111px 0px;
+    left: 5px;
+    top: 184px;
 }
 .gwd-div-2eq3 {
     position: absolute;
     width: 1124px;
-    height: 827px;
-    transform-origin: 561.91px 413.936px 0px;
-    -webkit-transform-origin: 561.91px 413.936px 0px;
-    -moz-transform-origin: 561.91px 413.936px 0px;
-    left: 24px;
-    top: 341px;
+    height: 800px;
+    transform-origin: 561.9px 400.657px 0px;
+    -webkit-transform-origin: 561.9px 400.657px 0px;
+    -moz-transform-origin: 561.9px 400.657px 0px;
+    left: 40px;
+    top: 426px;
+}
+.gwd-div-34k3 {
+    position: absolute;
+    width: 774px;
+    height: 324px;
+    transform-origin: 387px 162px 0px;
+    -webkit-transform-origin: 387px 162px 0px;
+    -moz-transform-origin: 387px 162px 0px;
+    top: 101px;
+    left: 347px;
+}
+pre.prettyprint {
+    width: auto;
+    overflow: auto;
+    max-height: 300px;
+}
+.gwd-p-hhuu {
+    position: absolute;
+    width: 79px;
+    left: 5px;
+    height: 22px;
+    transform-origin: 39.4731px 10.8139px 0px;
+    -webkit-transform-origin: 39.4731px 10.8139px 0px;
+    -moz-transform-origin: 39.4731px 10.8139px 0px;
+    top: 1246px;
+}
+.gwd-a-10mc {
+    font-size: 16px;
+    top: 19px;
+    left: -2px;
 }</style>
 </head>
 
@@ -201,14 +225,14 @@ body {
     <button onclick="getSectionsByCode()">Get Sections By Code</button>
     <button onclick="updateSectionInfo()">Update section info</button><br>
     
-    <pre class="prettyprint lang-json" id="result"></pre>
+    <button onclick="clearbox()">Clear</button>
   </div>
   <div class="gwd-div-2eq3">
-    <h4> API Access</h4>
-    <p>You use the information stored by this app in your own program through the API provided here.</p>
-    <b>/getDepartments</b> List of all departments returns a list of all the departments as json objects that looks like this:<br>
+    <h4 class=""> API Access</h4>
+    <p class="">You use the information stored by this app in your own program through the API provided here.</p>
+    <strong>/getDepartments</strong> List of all departments returns a list of all the departments as json objects that looks like this:<br>
     
-    <pre>    {
+    <pre class="">    {
         ID: int
         Name: String
         Code: String
@@ -216,8 +240,8 @@ body {
         Faculty: String
     }
     </pre>
-    <b>/getDepartmentByCode?code=""</b> List of courses by department code returns a department specified with a 'code' parameter in the post message:
-    <pre>    {
+    <strong>/getDepartmentByCode?code=""</strong> List of courses by department code returns a department specified with a 'code' parameter in the post message:
+    <pre class="">    {
         ID: int
         Name: String
         Code: String
@@ -225,16 +249,16 @@ body {
         Faculty: String
     }
     </pre>
-    <b>/getCoursesByCode?code=""</b> List of courses by department code returns a list of all the courses in a department specified with a 'code' parameter in the post message:
-    <pre>    {
+    <strong>/getCoursesByCode?code=""</strong> List of courses by department code returns a list of all the courses in a department specified with a 'code' parameter in the post message:
+    <pre class="">    {
         ID: int
         Name: String
         Code: String
         URL: String
     }
     </pre>
-    <b>/getSectionsByCode?code=""</b> List of sections by course code returns a list of all the sections ina course specified with a 'code' parameter in the post message:
-    <pre>    {
+    <strong>/getSectionsByCode?code=""</strong> List of sections by course code returns a list of all the sections ina course specified with a 'code' parameter in the post message:
+    <pre class="">    {
         ID: int
         Code: String
         Teacher: String
@@ -246,8 +270,14 @@ body {
         RestrictedSeatsRemaining: int
     }
     </pre>
-    <b>/getLastScrapeTime</b> Returns the last time the database was updated.
+    <strong>/getLastScrapeTime</strong> Returns the last time the database was updated.
   </div>
+  <div class="gwd-div-34k3">
+    <pre class="prettyprint lang-json" id="result"></pre>
+  </div>
+  <p class="gwd-p-hhuu"><a href="https://github.com/Ciuffi/UBCCourseScraper" target="_blank" class="gwd-a-10mc">Github</a><br>
+    
+  </p>
 
 
 </body></html>
