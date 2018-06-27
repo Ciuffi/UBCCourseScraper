@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>UBC Course Scraper</title>
-    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-</head>
-<body>
+<html><head><meta name="GCD" content="YTk3ODQ3ZWZhN2I4NzZmMzBkNTEwYjJl242375df7c2091d5602593fa30137b58"/>
+  <meta charset="utf-8">
+  <title>UBC Course Database</title>
+  <meta name="generator" content="Google Web Designer 4.0.1.0625">
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
     function update() {
         lastScrape();
@@ -94,40 +92,123 @@
         }
     }
 </script>
-<h1>UBC Course Scraper and Database Accessor (Alpha)</h1>
-<p style="word-wrap: break-word;">Welcome to the UBC course database. This website is the home of a third party tool that scrapes and stores all the information on the UBC course website so that it can be easily accessed through an API. Anyone is welcome to use it but please do not spam the server.</p>
-<button onclick="showdbinfo()">database info</button>
-<button onclick="showdbaccess()">database web access</button>
-<button onclick="showapiaccess()">API information</button>
-<div class="content" id="dbinfo" style="display: none">
-<h3>Database information</h3>
-<p id="lastScrapeId">Last Scrape: </p>
-<p id="scrapeStatus">Scrape Status: </p>
-<button onclick="update()">Update</button>
-<button onclick="location.href='/Departments';">Table View</button>
-</div>
-<div class="content" id="dbaccess" style="display: none">
-<h4>Database Accessor</h4>
-<label for="search">Code: </label>
-<input id="search"/>
-<br>
-<br>
-<button onclick="getDepartments()">Get All Departments</button>
-<button onclick="getDepartmentByCode()">Get Department By Code</button>
-<button onclick="getCoursesByCode()">Get Courses By Code</button>
-<button onclick="getSectionsByCode()">Get Sections By Code</button>
-<button onclick="updateSectionInfo()">Update section info</button>
-<br>
-<pre class="prettyprint lang-json" id="result"></pre>
-</div>
-<div class="content" id="apiaccess" style="display: none">
-<h4> API Access</h4>
-<p>You use the information stored by this app in your own program through the API provided here.</p>
-        <b>/getDepartments</b> List of all departments
-        returns a list of all the departments as json objects that looks like this:
-        <br>
-<pre>
-    {
+    <style type="text/css" id="gwd-text-style">p {
+    margin: 0px;
+}
+h1 {
+    margin: 0px;
+}
+h2 {
+    margin: 0px;
+}
+h3 {
+    margin: 0px;
+}</style>
+  <style type="text/css">html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+}
+body {
+    background-color: transparent;
+    transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    perspective: 1400px;
+    -webkit-perspective: 1400px;
+    -moz-perspective: 1400px;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+}
+.gwd-p-u6h5 {
+    position: absolute;
+    width: 641px;
+    transform-origin: 324.281px 42.8145px 0px;
+    -webkit-transform-origin: 324.281px 42.8145px 0px;
+    -moz-transform-origin: 324.281px 42.8145px 0px;
+    text-align: center;
+    height: 86px;
+    left: 248px;
+    top: 14px;
+}
+.gwd-p-1vlm {
+    position: absolute;
+    width: 994px;
+    height: 49px;
+    transform-origin: 382.371px 75.3519px 0px;
+    -webkit-transform-origin: 382.371px 75.3519px 0px;
+    -moz-transform-origin: 382.371px 75.3519px 0px;
+    left: 77px;
+    top: 110px;
+}
+.gwd-div-190f {
+    position: absolute;
+    width: 337px;
+    height: 129px;
+    transform-origin: 168.597px 64.7674px 0px;
+    -webkit-transform-origin: 168.597px 64.7674px 0px;
+    -moz-transform-origin: 168.597px 64.7674px 0px;
+    text-align: center;
+    left: 29px;
+    top: 212px;
+}
+.gwd-div-17al {
+    position: absolute;
+    text-align: center;
+    width: 776px;
+    left: 370px;
+    top: 140px;
+    height: 264px;
+    transform-origin: 388.195px 131.111px 0px;
+    -webkit-transform-origin: 388.195px 131.111px 0px;
+    -moz-transform-origin: 388.195px 131.111px 0px;
+}
+.gwd-div-2eq3 {
+    position: absolute;
+    width: 1124px;
+    height: 827px;
+    transform-origin: 561.91px 413.936px 0px;
+    -webkit-transform-origin: 561.91px 413.936px 0px;
+    -moz-transform-origin: 561.91px 413.936px 0px;
+    left: 24px;
+    top: 341px;
+}</style>
+</head>
+
+<body class="htmlNoPages">
+  <h1 class="gwd-p-u6h5">UBC Course Scraper and Database Accessor (Alpha)</h1>
+  <p class="gwd-p-1vlm">Welcome to the UBC course database. This website is the home of a third party tool that scrapes and stores all the information on the UBC course website so that it can be easily accessed through an API. Anyone is welcome to use it but please do not
+    spam the server.
+  </p>
+  <div class="gwd-div-190f">
+    <h3>Database information</h3>
+    <p id="lastScrapeId">Last Scrape:</p>
+    <p id="scrapeStatus">Scrape Status:</p>
+    <button onclick="update()">Update</button>
+    <button onclick="location.href='/Departments';">Table View</button>
+  </div>
+  <div class="gwd-div-17al">
+    <h4>Database Accessor</h4>
+    <label for="search">Code:</label>
+    <input id="search"><br>
+    <br>
+    
+    <button onclick="getDepartments()">Get All Departments</button>
+    <button onclick="getDepartmentByCode()">Get Department By Code</button>
+    <button onclick="getCoursesByCode()">Get Courses By Code</button>
+    <button onclick="getSectionsByCode()">Get Sections By Code</button>
+    <button onclick="updateSectionInfo()">Update section info</button><br>
+    
+    <pre class="prettyprint lang-json" id="result"></pre>
+  </div>
+  <div class="gwd-div-2eq3">
+    <h4> API Access</h4>
+    <p>You use the information stored by this app in your own program through the API provided here.</p>
+    <b>/getDepartments</b> List of all departments returns a list of all the departments as json objects that looks like this:<br>
+    
+    <pre>    {
         ID: int
         Name: String
         Code: String
@@ -135,10 +216,8 @@
         Faculty: String
     }
     </pre>
-        <b>/getDepartmentByCode?code=""</b> List of courses by department code
-        returns a department specified with a 'code' parameter in the post message:
-<pre>
-    {
+    <b>/getDepartmentByCode?code=""</b> List of courses by department code returns a department specified with a 'code' parameter in the post message:
+    <pre>    {
         ID: int
         Name: String
         Code: String
@@ -146,20 +225,16 @@
         Faculty: String
     }
     </pre>
-        <b>/getCoursesByCode?code=""</b> List of courses by department code
-        returns a list of all the courses in a department specified with a 'code' parameter in the post message:
-<pre>
-    {
+    <b>/getCoursesByCode?code=""</b> List of courses by department code returns a list of all the courses in a department specified with a 'code' parameter in the post message:
+    <pre>    {
         ID: int
         Name: String
         Code: String
         URL: String
     }
     </pre>
-        <b>/getSectionsByCode?code=""</b> List of sections by course code
-        returns a list of all the sections ina course specified with a 'code' parameter in the post message:
-<pre>
-    {
+    <b>/getSectionsByCode?code=""</b> List of sections by course code returns a list of all the sections ina course specified with a 'code' parameter in the post message:
+    <pre>    {
         ID: int
         Code: String
         Teacher: String
@@ -171,9 +246,8 @@
         RestrictedSeatsRemaining: int
     }
     </pre>
-        <b>/getLastScrapeTime</b> Returns the last time the database was updated.
-</div>
-<br><br>
-<a href="https://github.com/Ciuffi/UBCCourseScraper">Github</a>
-</body>
-</html>
+    <b>/getLastScrapeTime</b> Returns the last time the database was updated.
+  </div>
+
+
+</body></html>
