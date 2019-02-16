@@ -41,7 +41,7 @@ app.get("/Sections", function (req, res) {
 });
 
 app.get("/fullSectionUpdate", function (req, res) {
-    if (!blocked && (req.ip === "127.0.0.1" || req.ip === "::ffff:127.0.0.1" || req.ip === "::1")){
+    if (!blocked){
         console.log(moment().format("YYYY:MM:DD:hh:mm:ss A") + "; Request for full section scrape from: " + req.ip);
         blocked = true;
         scraper.updateAllSectionData(function () {
@@ -93,7 +93,7 @@ app.get('/scrapeStatus', function (req, res) {
     res.send(blocked);
 });
 app.get('/scrape', function(req, res){
-    if (!blocked && (req.ip === "127.0.0.1" || req.ip === "::ffff:127.0.0.1" || req.ip === "::1")) {
+    if (!blocked) {
         dbClient.getLastTime(function (result) {
             lastTime = result;
         });
@@ -108,6 +108,7 @@ app.get('/scrape', function(req, res){
             blocked = false;
         }
     }else{
+        console.log("Scrape Rejected: " + req.ip)
         res.sendStatus(503);
     }
 });
@@ -157,7 +158,6 @@ app.get('/getSectionsByCode', function (req, res) {
         res.send(JSON.stringify(result, null, 4));
     }
 });
-dbClient.connectDB();
 var port =  8080;
 app.listen(port);
 
