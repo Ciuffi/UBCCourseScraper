@@ -5,6 +5,13 @@ const config = {
     password: 'yogi03',
     database: "courses"
 };
+// const config = {
+//     host : '127.0.0.1',
+//     user: 'postgres',
+//     database: 'courses'
+// }
+
+
 const knex = Knex({ client: 'pg', connection: config });
 
 module.exports.timeInsert = function (startTime, endTime) {
@@ -15,7 +22,7 @@ module.exports.timeInsert = function (startTime, endTime) {
 };
 module.exports.getLastTime = function (callback) {
     knex.select("*").from('scrapeTimes').then((results) => {
-        callback(results.rows[0])
+        callback(results[0])
     })
 };
 module.exports.departmentInsert = function (department) {
@@ -26,7 +33,7 @@ module.exports.departmentInsert = function (department) {
             URL: department.url,
             Faculty: department.faculty,
         }).then((res) => {
-            if (res.rowCount === 0){
+            if (res.length === 0){
                 knex('Departments').insert({
                     Name: department.name,
                     Code: department.code,
@@ -38,8 +45,8 @@ module.exports.departmentInsert = function (department) {
 };
 module.exports.getDepartmentByCode = function (code, callback) {
     knex("Departments").select("*").where("Code", "like", '%' + code + '%').then((res) => {
-        if (res.rowCount >= 1){
-            callback(res.rows);
+        if (res.length >= 1){
+            callback(res);
         }else{
             callback("Not found :(");
         }
@@ -47,7 +54,7 @@ module.exports.getDepartmentByCode = function (code, callback) {
 };
 module.exports.getDepartments = function (callback) {
     knex('Departments').select("*").then((res) => {
-        callback(res.rows);
+        callback(res);
     });
 };
 module.exports.courseInsert = function (course) {
@@ -57,7 +64,7 @@ module.exports.courseInsert = function (course) {
             Code: course.code,
             URL: course.url,
         }).then((res) => {
-        if (res.rowCount === 0){
+        if (res.length === 0){
             knex('Courses').insert({
                 Name: course.name,
                 Code: course.code,
@@ -79,7 +86,7 @@ module.exports.sectionInsert = function (section) {
             Type: section.type,
             Length: section.length
         }).then((res) => {
-        if (res.rowCount === 0){
+        if (res.length === 0){
             knex('Sections').insert({
                 Name: section.name,
                 Code: section.code,
@@ -110,8 +117,8 @@ module.exports.updatedSectionInsert = function (section) {
 
 module.exports.getCoursesByCode = function (code, callback) {
     knex("Courses").select("*").where("Code", "like", '%' + code + '%').then((res) => {
-        if (res.rowCount >= 1){
-            callback(res.rows);
+        if (res.length >= 1){
+            callback(res);
         }else{
             callback("Not found :(");
         }
@@ -120,8 +127,8 @@ module.exports.getCoursesByCode = function (code, callback) {
 
 module.exports.getSectionsByCode = function (code, callback) {
     knex("Sections").select("*").where("Code", "like", '%' + code + '%').then((res) => {
-        if (res.rowCount >= 1){
-            callback(res.rows);
+        if (res.length >= 1){
+            callback(res);
         }else{
             callback("Not found :(");
         }
@@ -130,6 +137,6 @@ module.exports.getSectionsByCode = function (code, callback) {
 
 module.exports.getAllSections = function (callback) {
     knex('Sections').select("*").then((res) => {
-        callback(res.rows);
+        callback(res);
     });
 };
