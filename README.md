@@ -17,4 +17,6 @@ The dbclient connects to the database through a postgres connection string. It w
 
 The server will throw an error right away if it had trouble connecting to the database.
 
-A live version that is kept up to date can be found at: [http://207.6.49.83:8080/](http://207.6.49.83:8080/)
+This is currently being migrated to google cloud and a new data base module (knex).
+
+A live version that is kept up to date can be found at: [http://www.ubc-course-scraper.com/](http://www.ubc-course-scraper.com/)
