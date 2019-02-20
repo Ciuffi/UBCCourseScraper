@@ -1,15 +1,11 @@
 var Knex = require('knex');
+
 const config = {
-    host: "/cloudsql/ubc-course-scraper:us-central1:coursedb",
-    user: 'postgres',
-    password: 'yogi03',
-    database: "courses"
-};
-// const config = {
-//     host : '127.0.0.1',
-//     user: 'postgres',
-//     database: 'courses'
-// }
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME
+}
 
 
 const knex = Knex({ client: 'pg', connection: config });
