@@ -10,7 +10,7 @@ const config = {
 const knex = Knex({ 
     client: 'pg', 
     connection: config,
-    pool: {min: 2, max: 100} 
+    pool: {min: 2, max: 95} 
 });
 
 module.exports.timeInsert = function (startTime, endTime) {
