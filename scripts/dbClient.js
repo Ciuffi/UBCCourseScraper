@@ -7,7 +7,11 @@ const config = {
     database: process.env.DB_NAME
 }
 
-const knex = Knex({ client: 'pg', connection: config });
+const knex = Knex({ 
+    client: 'pg', 
+    connection: config,
+    pool: {min: 2, max: 100} 
+});
 
 module.exports.timeInsert = function (startTime, endTime) {
     knex('scrapeTimes').insert({
