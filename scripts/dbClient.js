@@ -3,10 +3,9 @@ var Knex = require('knex');
 const config = {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
-    password: process.env.DB_PASS,
+    password: process.env.DB_PASS ? process.env.DB_PASS : '',
     database: process.env.DB_NAME
 }
-
 
 const knex = Knex({ client: 'pg', connection: config });
 
