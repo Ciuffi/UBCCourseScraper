@@ -3,12 +3,4 @@
 
 node_modules/
 
-jail\.conf
-
-server\.zip
-
-dir_schema_dump
-
-only_schema
-
-tempo/
+app.yaml
