@@ -10,13 +10,16 @@ const config = {
 const knex = Knex({ 
     client: 'pg', 
     connection: config,
-    pool: {min: 2, max: 95} 
+    pool: {min: 2, max: 90} ,
+    acquireConnectionTimeout: 300000
 });
 
 module.exports.timeInsert = function (startTime, endTime) {
     knex('scrapeTimes').insert({
         startDate: startTime,
         endDate: endTime
+    }).then((res)=>{
+        console.log("Inserted new time: " + endTime);
     })
 };
 module.exports.getLastTime = function (callback) {
@@ -32,13 +35,17 @@ module.exports.departmentInsert = function (department) {
             URL: department.url,
             Faculty: department.faculty,
         }).then((res) => {
-            if (res.length === 0){
+            if (res === 0){
                 knex('Departments').insert({
                     Name: department.name,
                     Code: department.code,
                     URL: department.url,
                     Faculty: department.faculty,
+                }).then((result) => {
+                    console.log("Sucessfully added department: " + department.name)
                 })
+            }else {
+                console.log("Sucessfully updated department: " + department.name)
             }
     });
 };
@@ -63,19 +70,22 @@ module.exports.courseInsert = function (course) {
             Code: course.code,
             URL: course.url,
         }).then((res) => {
-        if (res.length === 0){
+        if (res === 0){
             knex('Courses').insert({
                 Name: course.name,
                 Code: course.code,
                 URL: course.url,
+            }).then((res) => {
+                console.log("Sucessfully added course: " + course.name)
             })
+        }else{
+            console.log("Sucessfully updated course: " + course.name)
         }
     });
 };
 module.exports.sectionInsert = function (section) {
     knex('Sections').where('Code', '=', section.code)
         .update({
-            Name: section.name,
             Code: section.code,
             URL: section.url,
             Term: section.term,
@@ -85,9 +95,8 @@ module.exports.sectionInsert = function (section) {
             Type: section.type,
             Length: section.length
         }).then((res) => {
-        if (res.length === 0){
+        if (res === 0){
             knex('Sections').insert({
-                Name: section.name,
                 Code: section.code,
                 URL: section.url,
                 Term: section.term,
@@ -96,7 +105,11 @@ module.exports.sectionInsert = function (section) {
                 'End Time': section.endTime,
                 Type: section.type,
                 Length: section.length
+            }).then((res) => {
+                console.log("Sucessfully added section: " + section.code)
             })
+        }else{
+            console.log(`Sucessfully updated section: ${section.code}`)
         }
     });
 };
@@ -111,6 +124,8 @@ module.exports.updatedSectionInsert = function (section) {
             CurrentlyRegistered: section.CurrentlyRegistered,
             GeneralSeatsRemaining: section.generalSeatsRemaining,
             RestrictedSeatsRemaining: section.restrictedSeatsRemaining
+        }).then((res) => {
+            console.log(`Section ${section.code} fully updated`)
         });
 };
 
