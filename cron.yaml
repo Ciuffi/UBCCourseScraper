@@ -1,0 +1,9 @@
+cron:
+- description: "Daily scrape"
+  url: /scrape
+  schedule: every day 01:00
+  timezone: America/Vancouver 
+- description: "Weekly section update"
+  url: /fullsectionupdate
+  schedule: every monday 02:30
+  timezone: America/Vancouver
