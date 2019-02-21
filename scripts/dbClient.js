@@ -22,12 +22,12 @@ module.exports.timeInsert = function (startTime, endTime) {
     console.log(`Inserted new time: ${endTime}`);
   });
 };
-module.exports.getLastTime = function (callback) {
+module.exports.getLastTime = (callback) => {
   knex.select('*').from('scrapeTimes').then((results) => {
     callback(results[0]);
   });
 };
-module.exports.departmentInsert = function (department) {
+module.exports.departmentInsert = (department) => {
   knex('Departments').where('Code', '=', department.code)
     .update({
       Name: department.name,
@@ -49,7 +49,7 @@ module.exports.departmentInsert = function (department) {
       }
     });
 };
-module.exports.getDepartmentByCode = function (code, callback) {
+module.exports.getDepartmentByCode = (code, callback) => {
   knex('Departments').select('*').where('Code', 'like', `%${code}%`).then((res) => {
     if (res.length >= 1) {
       callback(res);
@@ -58,12 +58,12 @@ module.exports.getDepartmentByCode = function (code, callback) {
     }
   });
 };
-module.exports.getDepartments = function (callback) {
+module.exports.getDepartments = (callback) => {
   knex('Departments').select('*').then((res) => {
     callback(res);
   });
 };
-module.exports.courseInsert = function (course) {
+module.exports.courseInsert = (course) => {
   knex('Courses').where('Code', '=', course.code)
     .update({
       Name: course.name,
@@ -83,7 +83,7 @@ module.exports.courseInsert = function (course) {
       }
     });
 };
-module.exports.sectionInsert = function (section) {
+module.exports.sectionInsert = (section) => {
   knex('Sections').where('Code', '=', section.code)
     .update({
       Code: section.code,
@@ -114,7 +114,7 @@ module.exports.sectionInsert = function (section) {
     });
 };
 
-module.exports.updatedSectionInsert = function (section) {
+module.exports.updatedSectionInsert = (section) => {
   knex('Sections').where('Code', '=', section.code)
     .update({
       Teacher: section.teacher,
@@ -129,7 +129,7 @@ module.exports.updatedSectionInsert = function (section) {
     });
 };
 
-module.exports.getCoursesByCode = function (code, callback) {
+module.exports.getCoursesByCode = (code, callback) => {
   knex('Courses').select('*').where('Code', 'like', `%${code}%`).then((res) => {
     if (res.length >= 1) {
       callback(res);
@@ -139,7 +139,7 @@ module.exports.getCoursesByCode = function (code, callback) {
   });
 };
 
-module.exports.getSectionsByCode = function (code, callback) {
+module.exports.getSectionsByCode = (code, callback) => {
   knex('Sections').select('*').where('Code', 'like', `%${code}%`).then((res) => {
     if (res.length >= 1) {
       callback(res);
@@ -149,7 +149,7 @@ module.exports.getSectionsByCode = function (code, callback) {
   });
 };
 
-module.exports.getAllSections = function (callback) {
+module.exports.getAllSections = (callback) => {
   knex('Sections').select('*').then((res) => {
     callback(res);
   });
