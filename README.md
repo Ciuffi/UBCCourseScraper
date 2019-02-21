@@ -25,6 +25,6 @@ const config = {
 }
 ```
 
-This is currently being migrated to google cloud and a new data base module (knex).
+The app is currently hosted on Google cloud and uses cron jobs to update daily for basic information and weekly for full section info.
 
 A live version that is kept up to date can be found at: [http://www.ubc-course-scraper.com/](http://www.ubc-course-scraper.com/)
