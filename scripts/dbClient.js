@@ -14,7 +14,7 @@ const knex = Knex({
   acquireConnectionTimeout: 300000,
 });
 
-module.exports.timeInsert = function (startTime, endTime) {
+module.exports.timeInsert = (startTime, endTime) => {
   knex('scrapeTimes').insert({
     startDate: startTime,
     endDate: endTime,
