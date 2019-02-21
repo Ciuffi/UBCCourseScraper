@@ -81,7 +81,7 @@ app.get('/getLastScrapeTime', (req, res) => {
   function returnResult(result) {
     if (result) {
       lastTime = result;
-      res.send(result.endDate);
+      res.send(momentTimezone.tz(result.endDate, 'America/Vancouver').format('MM:DD:YY:hh:mm A'));
     } else {
       res.send('No previous scrapes.');
     }
