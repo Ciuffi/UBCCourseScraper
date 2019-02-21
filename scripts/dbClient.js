@@ -14,6 +14,13 @@ const knex = Knex({
   acquireConnectionTimeout: 300000,
 });
 
+module.exports.connect = () => new Promise((accept, reject) => {
+  knex.raw('SET timezone="GMT-8";')
+    .then(() => accept(config))
+    .catch(error => reject(error))
+});
+
+
 module.exports.timeInsert = (startTime, endTime) => {
   knex('scrapeTimes').insert({
     startDate: startTime,
@@ -24,7 +31,7 @@ module.exports.timeInsert = (startTime, endTime) => {
 };
 module.exports.getLastTime = (callback) => {
   knex.select('*').from('scrapeTimes').then((results) => {
-    callback(results[0]);
+    callback(results.pop());
   });
 };
 module.exports.departmentInsert = (department) => {

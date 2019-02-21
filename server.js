@@ -97,10 +97,10 @@ app.get('/scrape', (req, res) => {
     });
     blocked = true;
     res.sendStatus(202);
-    const startTime = moment.format('MM/DD/YYYY hh:mm:ss A');
+    const startTime = moment.format('MM/DD/YYYY hh:mm A');
     console.log(`${moment.format('YYYY:MM:DD:hh:mm:ss A')}; Scrape request received from: ${req.ip} for ${req.query.size || 'all'} departments.`);
     scraper.mine(req.query.size, () => {
-      const endTime = moment.format('MM/DD/YYYY hh:mm:ss A');
+      const endTime = moment.format('MM/DD/YYYY hh:mm A');
       dbClient.timeInsert(startTime, endTime);
       blocked = false;
     });
@@ -156,8 +156,16 @@ app.get('/getSectionsByCode', (req, res) => {
   }
 });
 const port = 8080;
-app.listen(port);
+const server = app.listen(port);
+
+dbClient.connect().then((config) => {
+  console.log(`${moment.format('YYYY:MM:DD:hh:mm:ss A')}: Database connect on ${config.host}`);
+}).catch((error) => {
+  console.log(`${moment.format('YYYY:MM:DD:hh:mm:ss A')}: Database connection error: `, error);
+  server.close();
+});
 
 console.log(`${moment.format('YYYY:MM:DD:hh:mm:ss A')}: Magic happens on port ${port}`);
+
 
 exports = module.exports = app;
