@@ -19,7 +19,7 @@ module.exports.timeInsert = function (startTime, endTime) {
     startDate: startTime,
     endDate: endTime,
   }).then((res) => {
-    console.log('Inserted new time: ' + endTime);
+    console.log(`Inserted new time: ${endTime}`);
   });
 };
 module.exports.getLastTime = function (callback) {
@@ -42,18 +42,18 @@ module.exports.departmentInsert = function (department) {
           URL: department.url,
           Faculty: department.faculty,
         }).then((result) => {
-          console.log('Sucessfully added department: ' + department.name);
+          console.log(`Sucessfully added department: ${department.name}`);
         });
       } else {
-        console.log('Sucessfully updated department: ' + department.name);
+        console.log(`Sucessfully updated department: ${department.name}`);
       }
     });
 };
 module.exports.getDepartmentByCode = function (code, callback) {
-  knex('Departments').select('*').where('Code', 'like', `%${  code  }%`).then((res) => {
+  knex('Departments').select('*').where('Code', 'like', `%${code}%`).then((res) => {
     if (res.length >= 1) {
       callback(res);
-    } else{
+    } else {
       callback('Not found :(');
     }
   });
@@ -76,10 +76,10 @@ module.exports.courseInsert = function (course) {
           Code: course.code,
           URL: course.url,
         }).then((res) => {
-          console.log('Sucessfully added course: ' + course.name);
+          console.log(`Sucessfully added course: ${course.name}`);
         });
-      }else {
-        console.log('Sucessfully updated course: ' + course.name);
+      } else {
+        console.log(`Sucessfully updated course: ${course.name}`);
       }
     });
 };
@@ -106,9 +106,9 @@ module.exports.sectionInsert = function (section) {
           Type: section.type,
           Length: section.length,
         }).then((res) => {
-          console.log('Sucessfully added section: ' + section.code);
+          console.log(`Sucessfully added section: ${section.code}`);
         });
-      } else{
+      } else {
         console.log(`Sucessfully updated section: ${section.code}`);
       }
     });
@@ -130,20 +130,20 @@ module.exports.updatedSectionInsert = function (section) {
 };
 
 module.exports.getCoursesByCode = function (code, callback) {
-  knex('Courses').select('*').where('Code', 'like', `%${  code  }%`).then((res) => {
+  knex('Courses').select('*').where('Code', 'like', `%${code}%`).then((res) => {
     if (res.length >= 1) {
       callback(res);
-    }else {
+    } else {
       callback('Not found :(');
     }
   });
 };
 
 module.exports.getSectionsByCode = function (code, callback) {
-  knex('Sections').select('*').where('Code', 'like', `%${  code  }%`).then((res) => {
+  knex('Sections').select('*').where('Code', 'like', `%${code}%`).then((res) => {
     if (res.length >= 1) {
       callback(res);
-    } else{
+    } else {
       callback('Not found :(');
     }
   });
