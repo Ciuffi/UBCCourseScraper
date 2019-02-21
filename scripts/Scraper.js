@@ -29,7 +29,7 @@ module.exports.mine = (size, callback) => {
           table = $('#mainTable tr');
         }
 
-        table.each(() => {
+        table.each(function () {
           if ($(this).children('td').eq(0).children('a')
             .attr('href') != undefined) {
             const department = {
@@ -60,7 +60,7 @@ module.exports.mine = (size, callback) => {
           const $ = cheerio.load(html);
           const courses = [];
           table = $('#mainTable tr');
-          table.each(() => {
+          table.each(function () {
             if ($(this).children('td').eq(0).children('a')
               .attr('href')) {
               const course = {
@@ -93,7 +93,7 @@ module.exports.mine = (size, callback) => {
           if (!error) {
             const $ = cheerio.load(html);
             table = $('.section-summary tr');
-            table.each(() => {
+            table.each(function () {
               if ($(this).children('td').eq(1).children('a')
                 .attr('href')) {
                 const section = {
