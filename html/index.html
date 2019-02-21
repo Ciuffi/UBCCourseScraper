@@ -218,20 +218,20 @@ pre.prettyprint {
     <label for="search">Code:</label>
     <input id="search"><br>
     <br>
-    
+
     <button onclick="getDepartments()">Get All Departments</button>
     <button onclick="getDepartmentByCode()">Get Department By Code</button>
     <button onclick="getCoursesByCode()">Get Courses By Code</button>
     <button onclick="getSectionsByCode()">Get Sections By Code</button>
     <button onclick="updateSectionInfo()">Update section info</button><br>
-    
+
     <button onclick="clearbox()">Clear</button>
   </div>
   <div class="gwd-div-2eq3">
     <h4 class=""> API Access</h4>
     <p class="">You use the information stored by this app in your own program through the API provided here.</p>
     <strong>/getDepartments</strong> List of all departments returns a list of all the departments as json objects that looks like this:<br>
-    
+
     <pre class="">    {
         ID: int
         Name: String
@@ -273,10 +273,10 @@ pre.prettyprint {
     <strong>/getLastScrapeTime</strong> Returns the last time the database was updated.
   </div>
   <div class="gwd-div-34k3">
-    <pre class="prettyprint lang-json" id="result"></pre>
+    <pre class="prettyprint lang-json" id="result">DB Accessor responses will show up here.</pre>
   </div>
   <p class="gwd-p-hhuu"><a href="https://github.com/Ciuffi/UBCCourseScraper" target="_blank" class="gwd-a-10mc">Github</a><br>
-    
+
   </p>
 
 

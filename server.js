@@ -81,7 +81,7 @@ app.get('/getLastScrapeTime', (req, res) => {
   function returnResult(result) {
     if (result) {
       lastTime = result;
-      res.send(momentTimezone.tz(result.endDate, 'America/Vancouver').format('MM:DD:YY:hh:mm A'));
+      res.send(result.endDate);
     } else {
       res.send('No previous scrapes.');
     }
@@ -97,10 +97,10 @@ app.get('/scrape', (req, res) => {
     });
     blocked = true;
     res.sendStatus(202);
-    const startTime = new Date().toLocaleString();
+    const startTime = moment.format('MM/DD/YYYY hh:mm:ss A');
     console.log(`${moment.format('YYYY:MM:DD:hh:mm:ss A')}; Scrape request received from: ${req.ip} for ${req.query.size || 'all'} departments.`);
     scraper.mine(req.query.size, () => {
-      const endTime = new Date().toLocaleString();
+      const endTime = moment.format('MM/DD/YYYY hh:mm:ss A');
       dbClient.timeInsert(startTime, endTime);
       blocked = false;
     });
