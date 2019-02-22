@@ -44,7 +44,7 @@ app.get('/Sections', (req, res) => {
 });
 
 app.get('/fullSectionUpdate', (req, res) => {
-  if (!blocked) {
+  if (!blocked && req.get('X-Appengine-Cron')) {
     console.log(`${moment.format('YYYY:MM:DD:hh:mm:ss A')}; Request for full section scrape from: ${req.ip}`);
     blocked = true;
     scraper.updateAllSectionData(() => {
@@ -91,7 +91,7 @@ app.get('/scrapeStatus', (req, res) => {
   res.send(blocked);
 });
 app.get('/scrape', (req, res) => {
-  if (!blocked) {
+  if (!blocked && req.get('X-Appengine-Cron')) {
     dbClient.getLastTime((result) => {
       lastTime = result;
     });
