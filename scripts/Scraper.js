@@ -315,7 +315,7 @@ module.exports.updateAllSectionData = (callback) => {
       updatedSections.forEach((updatedSection) => {
         dbPromises.push(dbClient.updatedSectionInsert(updatedSection));
       });
-      Promise.all(dbPromises).then(() => {
+      Promise.all(dbPromises).finally(() => {
         console.log('Full section db insert done.');
         console.timeEnd('fullDbInsert');
         callback();
