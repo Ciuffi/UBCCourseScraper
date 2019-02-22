@@ -268,10 +268,8 @@ const readSectionPage = (url, code) => new Promise((resolve, reject) => {
         resolve();
       }
     } else {
-      console.log('An error occurred, probably a connection reset. Waiting for  5 seconds');
-      setTimeout(() => {
-        readSectionPage(url, code);
-      }, 5000);
+      console.log('An error occurred, probably a connection reset. Skipping section.');
+      resolve();
     }
   });
 });
