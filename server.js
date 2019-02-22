@@ -60,7 +60,7 @@ app.get('/fullSectionUpdate', (req, res) => {
 app.get('/sectionData', (req, res) => {
   console.log(`${moment.format('YYYY:MM:DD:hh:mm:ss A')}; Request for updated section info by code: ${req.query.code} from: ${req.ip}`);
   dbClient.getSectionsByCode(req.query.code, (sections) => {
-    scraper.readSectionPage(sections[0].URL, sections[0].Code, () => {
+    scraper.getFullSectionData(sections[0].URL, sections[0].Code, () => {
       dbClient.getSectionsByCode(req.query.code, (section) => {
         res.send(JSON.stringify(section, null, 4));
       });
@@ -101,6 +101,7 @@ app.get('/scrape', (req, res) => {
     console.log(`${moment.format('YYYY:MM:DD:hh:mm:ss A')}; Scrape request received from: ${req.ip} for ${req.query.size || 'all'} departments.`);
     scraper.mine(req.query.size, () => {
       const endTime = moment.format('MM/DD/YYYY hh:mm A');
+      console.log(`Scraping fully completed on ${endTime}!`);
       dbClient.timeInsert(startTime, endTime);
       blocked = false;
     });

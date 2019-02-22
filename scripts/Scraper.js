@@ -6,89 +6,130 @@ const dbClient = require('./dbClient.js');
 
 const base_uri = 'https://courses.students.ubc.ca';
 module.exports.mine = (size, callback) => {
-  console.time('scrape');
   let departments = [];
-  async.series([getDepartments, getCourses, getSection], () => {
-    console.log('Done');
-    console.timeEnd('scrape');
-    departments = null;
-    callback();
+  let courses = [];
+  let sections = [];
+  console.log('Beginning scrape...');
+  console.time('scrape');
+  console.log('Beginning department collection...');
+  getDepartments().then((deps) => {
+    departments = deps;
+    console.log(`Found ${deps.length} departments.`);
+    console.log('Beginning course collection...');
+    return deps;
+  }).then(getCourses).then((crs) => {
+    console.log(`found ${crs.length} courses.`);
+    console.log('Beginning section collection...');
+    courses = crs;
+    return crs;
+  })
+    .then(getSections)
+    .then((sects) => {
+      sections = sects;
+      console.log(`found ${sects.length} sections.`);
+      console.log('Done scrape.');
+      console.timeEnd('scrape');
+      return sects;
+    })
+    .then(() => {
+      console.log('Starting DB inserts...');
+      console.time('dbInsert');
+      fullDBInsert(departments, courses, sections).then(() => {
+        console.log('Done db inserts.');
+        console.timeEnd('dbInsert');
+        callback();
+      });
+    });
+
+  const fullDBInsert = (departments, courses, sections) => new Promise((resolve, reject) => {
+    const Promises = [];
+    departments.forEach((dep) => {
+      Promises.push(dbClient.departmentInsert(dep));
+    });
+    courses.forEach((course) => {
+      Promises.push(dbClient.courseInsert(course));
+    });
+    sections.forEach((section) => {
+      Promises.push(dbClient.sectionInsert(section));
+    });
+    Promise.all(Promises).then(() => {
+      resolve();
+    });
   });
 
-  function getDepartments(callback) {
-    const url = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=0';
-    request(url, (error, response, html) => {
-      if (!error) {
-        const $ = cheerio.load(html);
-        console.log('Beginning department collection...');
-        if (size) {
-          console.log(`getting ${size} departments..`);
-          table = $('#mainTable tr').slice(0, size);
-        } else {
-          console.log('getting all departments..');
-          table = $('#mainTable tr');
-        }
-
-        table.each(function () {
-          if ($(this).children('td').eq(0).children('a')
-            .attr('href') != undefined) {
-            const department = {
-              code: $(this).children('td').eq(0).text()
-                .trim(),
-              url: $(this).children('td').eq(0).children('a')
-                .attr('href'),
-              name: $(this).children('td').eq(1).text()
-                .trim(),
-              faculty: $(this).children('td').eq(2).text()
-                .trim(),
-              courses: null,
-            };
-            departments.push(department);
-            dbClient.departmentInsert(department);
-          }
-        });
-        callback();
-      }
-    });
-  }
-
-  function getCourses(callback) {
-    console.log('Beginning course collection...');
-    async.forEach(departments, (dep, callback) => {
-      request(base_uri + dep.url, (error, response, html) => {
+  function getDepartments() {
+    const departments = [];
+    return new Promise((resolve, reject) => {
+      const url = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=0';
+      request(url, (error, response, html) => {
         if (!error) {
           const $ = cheerio.load(html);
-          const courses = [];
-          table = $('#mainTable tr');
+          if (size) {
+            console.log(`getting ${size} departments..`);
+            table = $('#mainTable tr').slice(0, size);
+          } else {
+            console.log('getting all departments..');
+            table = $('#mainTable tr');
+          }
+
           table.each(function () {
             if ($(this).children('td').eq(0).children('a')
-              .attr('href')) {
-              const course = {
+              .attr('href') != undefined) {
+              const department = {
                 code: $(this).children('td').eq(0).text()
                   .trim(),
                 url: $(this).children('td').eq(0).children('a')
                   .attr('href'),
                 name: $(this).children('td').eq(1).text()
                   .trim(),
+                faculty: $(this).children('td').eq(2).text()
+                  .trim(),
+                courses: null,
               };
-              dbClient.courseInsert(course);
-              courses.push(course);
+              departments.push(department);
             }
           });
-          dep.courses = courses;
-          callback();
+          resolve(departments);
         }
       });
-    }, () => {
-      console.log('found all courses');
-      callback();
     });
   }
 
-  function getSection(callback) {
-    console.log('beginning section search..');
-    async.forEach(departments, (dep, callback) => {
-      async.eachSeries(dep.courses, (course, callback) => {
+  function getCourses(departments) {
+    const courses = [];
+    return new Promise((resolve, reject) => {
+      async.forEach(departments, (dep, callback) => {
+        request(base_uri + dep.url, (error, response, html) => {
+          if (!error) {
+            const $ = cheerio.load(html);
+            table = $('#mainTable tr');
+            table.each(function () {
+              if ($(this).children('td').eq(0).children('a')
+                .attr('href')) {
+                const course = {
+                  code: $(this).children('td').eq(0).text()
+                    .trim(),
+                  url: $(this).children('td').eq(0).children('a')
+                    .attr('href'),
+                  name: $(this).children('td').eq(1).text()
+                    .trim(),
+                };
+                courses.push(course);
+              }
+            });
+            callback();
+          }
+        });
+      }, () => {
+        resolve(courses);
+      });
+    });
+  }
+
+  const getSectionsSubset = (courses) => {
+    const sections = [];
+    return new Promise((resolve, reject) => {
+      async.eachSeries(courses, (course, callback) => {
         request(base_uri + course.url, (error, response, html) => {
           if (!error) {
             const $ = cheerio.load(html);
@@ -120,9 +161,9 @@ module.exports.mine = (size, callback) => {
                   start = moment(section.startTime, 'HH:mm');
                   length = moment.duration(end.diff(start)).asMinutes();
                   section.length = `${length} minutes`;
-                  dbClient.sectionInsert(section);
+                  sections.push(section);
                 } else {
-                  dbClient.sectionInsert(section);
+                  sections.push(section);
                 }
               }
             });
@@ -137,16 +178,27 @@ module.exports.mine = (size, callback) => {
           }
         });
       }, () => {
-        dep = null;
-        callback();
+        resolve(sections);
       });
-    }, () => {
-      console.log('Found all sections');
-      callback();
     });
+  };
+  async function getSections(courses) {
+    const split = 100;
+    const len = courses.length / split;
+    const promises = [];
+    promises.push(getSectionsSubset(courses.slice(0, len)));
+    for (let i = 1; i < split - 1; i++) {
+      promises.push(getSectionsSubset(courses.slice(1 + (len * i), len * (i + 1))));
+    }
+    promises.push(getSectionsSubset(courses.slice(1 + len * split, -1)));
+    const sectionList = await Promise.all(promises);
+    let sections = [];
+    sections = [].concat.apply(sections, sectionList);
+    return sections;
   }
 };
-module.exports.readSectionPage = (url, code, callback) => {
+
+const readSectionPage = (url, code) => new Promise((resolve, reject) => {
   request(base_uri + url, (error, response, html) => {
     if (!error) {
       const $ = cheerio.load(html);
@@ -189,33 +241,85 @@ module.exports.readSectionPage = (url, code, callback) => {
             .text()
             .trim(),
         };
-        dbClient.updatedSectionInsert(SectionPage);
-        callback(SectionPage);
+        console.log(`updated ${SectionPage.code}`);
+        resolve(SectionPage);
       } else {
-        callback();
+        resolve();
       }
     } else {
       console.log('An error occurred, probably a connection reset. Waiting for  5 seconds');
       setTimeout(() => {
-        module.exports.readSectionPage(url, code, callback);
+        readSectionPage(url, code);
       }, 5000);
+    }
+  });
+});
+
+module.exports.getFullSectionData = (url, code, callback) => {
+  console.log(`Updating section data for section ${code}`);
+  readSectionPage(url, code).then((section) => {
+    if (section) {
+      console.log(`section ${section.code} scraped successfully`);
+      dbClient.updatedSectionInsert(section).then(() => {
+        console.log(`section ${section.code} sucessfully added to db.`);
+        callback();
+      });
+    } else {
+      callback();
     }
   });
 };
 
+
+function getSectionData(sections) {
+  return new Promise((resolve, reject) => {
+    const updatedSections = [];
+    async.eachSeries(sections, (section, callback) => {
+      readSectionPage(section.URL, section.Code).then((updatedSection) => {
+        updatedSections.push(updatedSection);
+        callback();
+      });
+    }, () => resolve(updatedSections));
+  });
+}
+
+
+async function updateSections(sections) {
+  let split = 1000;
+  if (split >= sections.length) split = sections.length / 5;
+  const len = sections.length / split;
+  const promises = [];
+  promises.push(getSectionData(sections.slice(0, len)));
+  for (let i = 1; i < split - 1; i++) {
+    promises.push(getSectionData(sections.slice(1 + (len * i), len * (i + 1))));
+  }
+  promises.push(getSectionData(sections.slice(1 + len * split, -1)));
+  const sectionList = await Promise.all(promises);
+  let updatedSections = [];
+  updatedSections = [].concat.apply(updatedSections, sectionList);
+  return updatedSections;
+}
+
+
 module.exports.updateAllSectionData = (callback) => {
+  const dbPromises = [];
   console.time('sectionScrape');
   console.log('Beginning full section update...');
   dbClient.getAllSections((sections) => {
     console.log(`Found ${sections.length} sections...`);
-    async.forEachSeries(sections, (section, callback) => {
-      module.exports.readSectionPage(section.URL, section.Code, () => {
+    updateSections(sections).then((updatedSections) => {
+      console.log('Full section scrape done.');
+      console.timeEnd('sectionScrape');
+      console.log('Beginning full section db insert..');
+      console.time('fullDbInsert');
+      updatedSections.forEach((updatedSection) => {
+        dbPromises.push(dbClient.updatedSectionInsert(updatedSection));
+      });
+      Promise.all(dbPromises).then(() => {
+        console.log('Full section db insert done.');
+        console.timeEnd('fullDbInsert');
         callback();
       });
-    }, () => {
-      console.log('Full section update complete.');
-      console.timeEnd('sectionScrape');
-      callback();
     });
   });
 };

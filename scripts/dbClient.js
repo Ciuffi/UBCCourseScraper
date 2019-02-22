@@ -17,7 +17,7 @@ const knex = Knex({
 module.exports.connect = () => new Promise((accept, reject) => {
   knex.raw('SET timezone="GMT-8";')
     .then(() => accept(config))
-    .catch(error => reject(error))
+    .catch(error => reject(error));
 });
 
 
@@ -25,16 +25,14 @@ module.exports.timeInsert = (startTime, endTime) => {
   knex('scrapeTimes').insert({
     startDate: startTime,
     endDate: endTime,
-  }).then((res) => {
-    console.log(`Inserted new time: ${endTime}`);
-  });
+  }).then(() => console.log(`added new time ${endTime}`));
 };
 module.exports.getLastTime = (callback) => {
   knex.select('*').from('scrapeTimes').then((results) => {
     callback(results.pop());
   });
 };
-module.exports.departmentInsert = (department) => {
+module.exports.departmentInsert = department => new Promise((resolve, reject) => {
   knex('Departments').where('Code', '=', department.code)
     .update({
       Name: department.name,
@@ -48,14 +46,12 @@ module.exports.departmentInsert = (department) => {
           Code: department.code,
           URL: department.url,
           Faculty: department.faculty,
-        }).then((result) => {
-          console.log(`Sucessfully added department: ${department.name}`);
-        });
+        }).then(() => resolve());
       } else {
-        console.log(`Sucessfully updated department: ${department.name}`);
+        resolve();
       }
     });
-};
+});
 module.exports.getDepartmentByCode = (code, callback) => {
   knex('Departments').select('*').where('Code', 'like', `%${code}%`).then((res) => {
     if (res.length >= 1) {
@@ -70,7 +66,7 @@ module.exports.getDepartments = (callback) => {
     callback(res);
   });
 };
-module.exports.courseInsert = (course) => {
+module.exports.courseInsert = course => new Promise((resolve, reject) => {
   knex('Courses').where('Code', '=', course.code)
     .update({
       Name: course.name,
@@ -82,15 +78,13 @@ module.exports.courseInsert = (course) => {
           Name: course.name,
           Code: course.code,
           URL: course.url,
-        }).then((res) => {
-          console.log(`Sucessfully added course: ${course.name}`);
-        });
+        }).then(() => resolve());
       } else {
-        console.log(`Sucessfully updated course: ${course.name}`);
+        resolve();
       }
     });
-};
-module.exports.sectionInsert = (section) => {
+});
+module.exports.sectionInsert = section => new Promise((resolve, reject) => {
   knex('Sections').where('Code', '=', section.code)
     .update({
       Code: section.code,
@@ -112,16 +106,14 @@ module.exports.sectionInsert = (section) => {
           'End Time': section.endTime,
           Type: section.type,
           Length: section.length,
-        }).then((res) => {
-          console.log(`Sucessfully added section: ${section.code}`);
-        });
+        }).then(() => resolve());
       } else {
-        console.log(`Sucessfully updated section: ${section.code}`);
+        resolve();
       }
     });
-};
+});
 
-module.exports.updatedSectionInsert = (section) => {
+module.exports.updatedSectionInsert = section => new Promise((resolve, reject) => {
   knex('Sections').where('Code', '=', section.code)
     .update({
       Teacher: section.teacher,
@@ -131,10 +123,11 @@ module.exports.updatedSectionInsert = (section) => {
       CurrentlyRegistered: section.CurrentlyRegistered,
       GeneralSeatsRemaining: section.generalSeatsRemaining,
       RestrictedSeatsRemaining: section.restrictedSeatsRemaining,
-    }).then((res) => {
-      console.log(`Section ${section.code} fully updated`);
+    }).then(() => {
+      console.log(`fully updated ${section.code}`);
+      resolve();
     });
-};
+});
 
 module.exports.getCoursesByCode = (code, callback) => {
   knex('Courses').select('*').where('Code', 'like', `%${code}%`).then((res) => {
