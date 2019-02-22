@@ -34,7 +34,7 @@ module.exports.mine = (size, callback) => {
     .then(() => {
       console.log('Starting DB inserts...');
       console.time('dbInsert');
-      fullDBInsert(departments, courses, sections).then(() => {
+      fullDBInsert(departments, courses, sections).finally(() => {
         console.log('Done db inserts.');
         console.timeEnd('dbInsert');
         callback();
@@ -52,7 +52,7 @@ module.exports.mine = (size, callback) => {
     sections.forEach((section) => {
       Promises.push(dbClient.sectionInsert(section));
     });
-    Promise.all(Promises).then(() => {
+    Promise.all(Promises).finally(() => {
       resolve();
     });
   });
@@ -241,7 +241,6 @@ const readSectionPage = (url, code) => new Promise((resolve, reject) => {
             .text()
             .trim(),
         };
-        console.log(`updated ${SectionPage.code}`);
         resolve(SectionPage);
       } else {
         resolve();

@@ -124,7 +124,6 @@ module.exports.updatedSectionInsert = section => new Promise((resolve, reject) =
       GeneralSeatsRemaining: section.generalSeatsRemaining,
       RestrictedSeatsRemaining: section.restrictedSeatsRemaining,
     }).then(() => {
-      console.log(`fully updated ${section.code}`);
       resolve();
     });
 });
