@@ -32,9 +32,11 @@ module.exports.mine = (size, callback) => {
       return sects;
     })
     .then(() => {
+      console.log('deduplicating sections..');
+      const cleanSections = deleteDuplicates(sections);
       console.log('Starting DB inserts...');
       console.time('dbInsert');
-      fullDBInsert(departments, courses, sections).finally(() => {
+      fullDBInsert(departments, courses, cleanSections).finally(() => {
         console.log('Done db inserts.');
         console.timeEnd('dbInsert');
         callback();
@@ -118,6 +120,9 @@ module.exports.mine = (size, callback) => {
               }
             });
             callback();
+          } else {
+            console.log(`error getting page: ${error}`);
+            callback();
           }
         });
       }, () => {
@@ -169,12 +174,8 @@ module.exports.mine = (size, callback) => {
             });
             callback();
           } else {
-            console.log(`error: ${error}`);
-            console.log('Possible connection reset. waiting 5 seconds.');
-            setTimeout(() => {
-              console.log('restarting...');
-              callback();
-            }, 5000);
+            console.log(`error getting page: ${error}`);
+            callback();
           }
         });
       }, () => {
@@ -186,16 +187,37 @@ module.exports.mine = (size, callback) => {
     const split = 100;
     const len = courses.length / split;
     const promises = [];
-    promises.push(getSectionsSubset(courses.slice(0, len)));
+    const coursesSplits = [];
+    coursesSplits.push((courses.slice(0, len)));
     for (let i = 1; i < split - 1; i++) {
-      promises.push(getSectionsSubset(courses.slice(1 + (len * i), len * (i + 1))));
+      coursesSplits.push(courses.slice(len * i, len * (i + 1)));
     }
-    promises.push(getSectionsSubset(courses.slice(1 + len * split, -1)));
+    coursesSplits.push(courses.slice(len * (split - 1), courses.length));
+    coursesSplits.forEach((courseSplit) => {
+      promises.push(getSectionsSubset(courseSplit));
+    });
     const sectionList = await Promise.all(promises);
     let sections = [];
     sections = [].concat.apply(sections, sectionList);
     return sections;
   }
+};
+const deleteDuplicates = (sections) => {
+  const deletedSects = sections.filter((sect, i) => {
+    const dups = sections.filter(sect1 => sect1.code === sect.code);
+    let index;
+    if (dups.length > 1) {
+      const indices = [];
+      dups.forEach(dup => indices.push(sections.indexOf(dup)));
+      index = indices[0];
+    } else {
+      index = sections.indexOf(sect);
+    }
+    return sections.indexOf(sect) === index;
+  });
+  console.log(`Old Size: ${sections.length}\nNew Size: ${deletedSects.length}`);
+  console.log(`Size diff: ${sections.length - deletedSects.length}`);
+  return deletedSects;
 };
 
 const readSectionPage = (url, code) => new Promise((resolve, reject) => {
@@ -309,9 +331,11 @@ module.exports.updateAllSectionData = (callback) => {
     updateSections(sections).then((updatedSections) => {
       console.log('Full section scrape done.');
       console.timeEnd('sectionScrape');
+      console.log('deduplicating sections..');
+      const cleanSections = deleteDuplicates(updatedSections);
       console.log('Beginning full section db insert..');
       console.time('fullDbInsert');
-      updatedSections.forEach((updatedSection) => {
+      cleanSections.forEach((updatedSection) => {
         dbPromises.push(dbClient.updatedSectionInsert(updatedSection));
       });
       Promise.all(dbPromises).finally(() => {
