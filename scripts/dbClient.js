@@ -106,10 +106,17 @@ module.exports.sectionInsert = section => new Promise((resolve, reject) => {
           'End Time': section.endTime,
           Type: section.type,
           Length: section.length,
-        }).then(() => resolve());
+        }).then(() => resolve()).catch((error) => {
+          console.log(error);
+          resolve();
+        });
       } else {
         resolve();
       }
+    })
+    .catch((error) => {
+      resolve();
+      console.log(error);
     });
 });
 
