@@ -25,7 +25,10 @@ module.exports.timeInsert = (startTime, endTime) => {
   knex('scrapeTimes').insert({
     startDate: startTime,
     endDate: endTime,
-  }).then(() => console.log(`added new time ${endTime}`));
+  }).then(() => console.log(`added new time ${endTime}`))
+    .catch((error) => {
+      console.log(error);
+    });
 };
 module.exports.getLastTime = (callback) => {
   knex.select('*').from('scrapeTimes').then((results) => {
@@ -46,10 +49,15 @@ module.exports.departmentInsert = department => new Promise((resolve, reject) =>
           Code: department.code,
           URL: department.url,
           Faculty: department.faculty,
-        }).then(() => resolve());
+        }).then(() => resolve()).catch((error) => {
+          reject(error);
+        });
       } else {
         resolve();
       }
+    })
+    .catch((error) => {
+      reject(error);
     });
 });
 module.exports.getDepartmentByCode = (code, callback) => {
@@ -78,10 +86,15 @@ module.exports.courseInsert = course => new Promise((resolve, reject) => {
           Name: course.name,
           Code: course.code,
           URL: course.url,
-        }).then(() => resolve());
+        }).then(() => resolve()).catch((error) => {
+          reject(error);
+        });
       } else {
         resolve();
       }
+    })
+    .catch((error) => {
+      reject(error);
     });
 });
 module.exports.sectionInsert = section => new Promise((resolve, reject) => {
@@ -107,16 +120,14 @@ module.exports.sectionInsert = section => new Promise((resolve, reject) => {
           Type: section.type,
           Length: section.length,
         }).then(() => resolve()).catch((error) => {
-          console.log(error);
-          resolve();
+          reject(error);
         });
       } else {
         resolve();
       }
     })
     .catch((error) => {
-      resolve();
-      console.log(error);
+      reject(error);
     });
 });
 
@@ -132,6 +143,9 @@ module.exports.updatedSectionInsert = section => new Promise((resolve, reject) =
       RestrictedSeatsRemaining: section.restrictedSeatsRemaining,
     }).then(() => {
       resolve();
+    })
+    .catch((error) => {
+      reject(error);
     });
 });
 

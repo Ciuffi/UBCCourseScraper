@@ -36,9 +36,14 @@ module.exports.mine = (size, callback) => {
       const cleanSections = deleteDuplicates(sections);
       console.log('Starting DB inserts...');
       console.time('dbInsert');
-      fullDBInsert(departments, courses, cleanSections).finally(() => {
+      fullDBInsert(departments, courses, cleanSections).then(() => {
         console.log('Done db inserts.');
         console.timeEnd('dbInsert');
+        callback();
+      }).catch((errors) => {
+        console.log('db insert failure.');
+        console.timeEnd('dbInsert');
+        console.log(errors);
         callback();
       });
     });
@@ -54,8 +59,12 @@ module.exports.mine = (size, callback) => {
     sections.forEach((section) => {
       Promises.push(dbClient.sectionInsert(section));
     });
-    Promise.all(Promises).finally(() => {
-      resolve();
+    Promise.all(Promises.map(p => p.catch(e => e))).then((results) => {
+      if (results.length > 0) {
+        reject(results);
+      } else {
+        resolve();
+      }
     });
   });
 
@@ -92,6 +101,9 @@ module.exports.mine = (size, callback) => {
             }
           });
           resolve(departments);
+        } else {
+          console.log(`error getting page: ${error}`);
+          resolve();
         }
       });
     });
@@ -268,8 +280,8 @@ const readSectionPage = (url, code) => new Promise((resolve, reject) => {
         resolve();
       }
     } else {
-      console.log('An error occurred, probably a connection reset. Skipping section.');
-      resolve();
+      console.log(`error getting page: ${error}`);
+      reject(error);
     }
   });
 });
@@ -279,7 +291,7 @@ module.exports.getFullSectionData = (url, code, callback) => {
   readSectionPage(url, code).then((section) => {
     if (section) {
       console.log(`section ${section.code} scraped successfully`);
-      dbClient.updatedSectionInsert(section).then(() => {
+      dbClient.updatedSectionInsert(section).finally(() => {
         console.log(`section ${section.code} sucessfully added to db.`);
         callback();
       });
@@ -297,7 +309,7 @@ function getSectionData(sections) {
       readSectionPage(section.URL, section.Code).then((updatedSection) => {
         updatedSections.push(updatedSection);
         callback();
-      });
+      }).catch(() => callback());
     }, () => resolve(updatedSections));
   });
 }
@@ -336,10 +348,17 @@ module.exports.updateAllSectionData = (callback) => {
       cleanSections.forEach((updatedSection) => {
         dbPromises.push(dbClient.updatedSectionInsert(updatedSection));
       });
-      Promise.all(dbPromises).finally(() => {
-        console.log('Full section db insert done.');
-        console.timeEnd('fullDbInsert');
-        callback();
+      Promise.all(dbPromises.map(p => p.catch(e => e))).then((results) => {
+        if (results.length > 0) {
+          console.log('Full section db insert failure.');
+          console.timeEnd('fullDbInsert');
+          console.log(results);
+          callback();
+        } else {
+          console.log('Full section db insert done.');
+          console.timeEnd('fullDbInsert');
+          callback();
+        }
       });
     });
   });
