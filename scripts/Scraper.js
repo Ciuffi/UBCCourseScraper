@@ -60,8 +60,8 @@ module.exports.mine = (size, callback) => {
       Promises.push(dbClient.sectionInsert(section));
     });
     Promise.all(Promises.map(p => p.catch(e => e))).then((results) => {
-      if (results.length > 0) {
-        reject(results);
+      if (results.find(e => e !== undefined) !== undefined) {
+        reject(results.filter(e => e !== undefined));
       } else {
         resolve();
       }
@@ -215,7 +215,7 @@ module.exports.mine = (size, callback) => {
   }
 };
 const deleteDuplicates = (sections) => {
-  const deletedSects = sections.filter((sect, i) => {
+  const deletedSects = sections.filter((sect) => {
     const dups = sections.filter(sect1 => sect1.code === sect.code);
     let index;
     if (dups.length > 1) {
@@ -232,6 +232,7 @@ const deleteDuplicates = (sections) => {
   return deletedSects;
 };
 
+let fullSectionCounter = 0;
 const readSectionPage = (url, code) => new Promise((resolve, reject) => {
   request(base_uri + url, (error, response, html) => {
     if (!error) {
@@ -281,18 +282,15 @@ const readSectionPage = (url, code) => new Promise((resolve, reject) => {
       }
     } else {
       console.log(`error getting page: ${error}`);
-      reject(error);
+      reject();
     }
   });
 });
 
 module.exports.getFullSectionData = (url, code, callback) => {
-  console.log(`Updating section data for section ${code}`);
   readSectionPage(url, code).then((section) => {
     if (section) {
-      console.log(`section ${section.code} scraped successfully`);
       dbClient.updatedSectionInsert(section).finally(() => {
-        console.log(`section ${section.code} sucessfully added to db.`);
         callback();
       });
     } else {
@@ -301,13 +299,18 @@ module.exports.getFullSectionData = (url, code, callback) => {
   });
 };
 
+const printLine = (line) => {
+  process.stdout.write(`${line}\r`);
+};
 
-function getSectionData(sections) {
+function getSectionData(sections, sectionLength) {
   return new Promise((resolve, reject) => {
     const updatedSections = [];
     async.eachSeries(sections, (section, callback) => {
       readSectionPage(section.URL, section.Code).then((updatedSection) => {
         updatedSections.push(updatedSection);
+        fullSectionCounter++;
+        printLine(`FullUpdate: ${fullSectionCounter}/${sectionLength}|${Math.trunc((fullSectionCounter / sectionLength) * 100)}%`);
         callback();
       }).catch(() => callback());
     }, () => resolve(updatedSections));
@@ -316,19 +319,21 @@ function getSectionData(sections) {
 
 
 async function updateSections(sections) {
-  let split = 1000;
+  console.log();
+  let split = 500;
   if (split >= sections.length) split = sections.length / 5;
   const len = sections.length / split;
   const promises = [];
-  promises.push(getSectionData(sections.slice(0, len)));
+  promises.push(getSectionData(sections.slice(0, len), sections.length));
   for (let i = 1; i < split - 1; i++) {
-    promises.push(getSectionData(sections.slice(1 + (len * i), len * (i + 1))));
+    promises.push(getSectionData(sections.slice(1 + (len * i), len * (i + 1)), sections.length));
   }
-  promises.push(getSectionData(sections.slice(1 + len * split, -1)));
+  promises.push(getSectionData(sections.slice(1 + len * split, -1), sections.length));
   const sectionList = await Promise.all(promises);
   let updatedSections = [];
   updatedSections = [].concat.apply(updatedSections, sectionList);
-  return updatedSections;
+  console.log();
+  return updatedSections.filter(e => e !== undefined);
 }
 
 
@@ -338,6 +343,7 @@ module.exports.updateAllSectionData = (callback) => {
   console.log('Beginning full section update...');
   dbClient.getAllSections((sections) => {
     console.log(`Found ${sections.length} sections...`);
+    fullSectionCounter = 0;
     updateSections(sections).then((updatedSections) => {
       console.log('Full section scrape done.');
       console.timeEnd('sectionScrape');
@@ -349,7 +355,7 @@ module.exports.updateAllSectionData = (callback) => {
         dbPromises.push(dbClient.updatedSectionInsert(updatedSection));
       });
       Promise.all(dbPromises.map(p => p.catch(e => e))).then((results) => {
-        if (results.length > 0) {
+        if (results.find(e => e !== undefined) !== undefined) {
           console.log('Full section db insert failure.');
           console.timeEnd('fullDbInsert');
           console.log(results);

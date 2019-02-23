@@ -130,7 +130,6 @@ module.exports.sectionInsert = section => new Promise((resolve, reject) => {
       reject(error);
     });
 });
-
 module.exports.updatedSectionInsert = section => new Promise((resolve, reject) => {
   knex('Sections').where('Code', '=', section.code)
     .update({
