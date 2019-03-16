@@ -13,17 +13,7 @@ that information.
 2. Setup a postgres database and import the _schema_dump_ restore file.
 3. To start the server, type `node server.js` in the root directory
 
-The dbclient connects to the database through env variables.
-Here is the configuration for the env variables:
-
-```javascript
-const config = {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME
-}
-```
+The dbclient uses firebase and connects through google app engine.
 
 The app is currently hosted on Google cloud and uses cron jobs to update daily for basic information and weekly for full section info.
 
