@@ -1,7 +1,14 @@
+//GAE
 const admin = require('firebase-admin');
 
+// admin.initializeApp({
+//   credential: admin.credential.applicationDefault(),
+// });
+//Local
+const serviceAccount = require('./ubc-course-scraper-123-af3901de4598');
+
 admin.initializeApp({
-  credential: admin.credential.applicationDefault()
+  credential: admin.credential.cert(serviceAccount)
 });
 
 const db = admin.firestore();
@@ -50,7 +57,7 @@ module.exports.courseInsert = async (course) => {
     URL: course.url,
   };
   try {
-    return db.collection('courses').where('Code', '==', course.code).update(data);
+    return db.collection('courses').where('Code', 'LIKE', course.code).update(data);
   } catch (e) {
     return db.collection('courses').add(data);
   }
