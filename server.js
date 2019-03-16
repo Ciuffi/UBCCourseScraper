@@ -1,7 +1,7 @@
 const express = require('express');
 const momentTimezone = require('moment-timezone');
 const scraper = require('./scripts/Scraper.js');
-const dbClient = require('./scripts/dbClient.js');
+const dbClient = require('./scripts/dbClien-firestore');
 
 const moment = momentTimezone.tz('America/Vancouver');
 
@@ -12,14 +12,14 @@ app.set('views', `${__dirname}/views/`);
 app.set('view engine', 'pug');
 
 app.get('/Departments', (req, res) => {
-  dbClient.getDepartments((deps) => {
+  dbClient.getDepartments().then((deps) => {
     res.render('departments', { departments: deps });
   });
 });
 app.get('/Courses', (req, res) => {
   if (req.query.code) {
-    dbClient.getCoursesByCode(req.query.code, (courses) => {
-      if (courses === 'Not found :(') {
+    dbClient.getCoursesByCode(req.query.code).then((courses) => {
+      if (courses === null) {
         res.send('No course with this code.');
       } else {
         res.render('courses', { code: req.query.code, courses });
@@ -31,8 +31,8 @@ app.get('/Courses', (req, res) => {
 });
 app.get('/Sections', (req, res) => {
   if (req.query.code) {
-    dbClient.getSectionsByCode(req.query.code, (sections) => {
-      if (sections === 'Not found :(') {
+    dbClient.getSectionsByCode(req.query.code).then((sections) => {
+      if (sections === null) {
         res.send('No section with this code.');
       } else {
         res.render('sections', { code: req.query.code, sections });
@@ -59,9 +59,9 @@ app.get('/fullSectionUpdate', (req, res) => {
 
 app.get('/sectionData', (req, res) => {
   console.log(`${moment.format('YYYY:MM:DD:hh:mm:ss A')}; Request for updated section info by code: ${req.query.code} from: ${req.ip}`);
-  dbClient.getSectionsByCode(req.query.code, (sections) => {
-    scraper.getFullSectionData(sections[0].URL, sections[0].Code, () => {
-      dbClient.getSectionsByCode(req.query.code, (section) => {
+  dbClient.getSectionsByCode(req.query.code).then((sections) => {
+    scraper.getFullSectionData(sections[0].URL, sections[0].Code).then(() => {
+      dbClient.getSectionsByCode(req.query.code).then((section) => {
         res.send(JSON.stringify(section, null, 4));
       });
     });
@@ -74,14 +74,14 @@ app.get('/', (req, res) => {
 });
 app.get('/getLastScrapeTime', (req, res) => {
   if (!blocked) {
-    dbClient.getLastTime(returnResult);
+    dbClient.getLastTime().then(returnResult);
   } else {
     returnResult(lastTime);
   }
   function returnResult(result) {
     if (result) {
       lastTime = result;
-      res.send(result.endDate);
+      res.send(result.end_time);
     } else {
       res.send('No previous scrapes.');
     }
@@ -112,7 +112,7 @@ app.get('/scrape', (req, res) => {
 });
 
 app.get('/getDepartments', (req, res) => {
-  dbClient.getDepartments(returnResult);
+  dbClient.getDepartments().then(returnResult);
   function returnResult(result) {
     res.send(JSON.stringify(result, null, 4));
   }
@@ -122,7 +122,7 @@ app.get('/getDepartments', (req, res) => {
 app.get('/getDepartmentByCode', (req, res) => {
   if (req.query.code) {
     console.log(`${moment.format('YYYY:MM:DD:hh:mm:ss A')}; Request for Department by code: ${req.query.code} from: ${req.ip}`);
-    dbClient.getDepartmentByCode(req.query.code, returnResult);
+    dbClient.getDepartmentByCode(req.query.code).then(returnResult);
   } else {
     res.send('No code!');
   }
@@ -135,7 +135,7 @@ app.get('/getDepartmentByCode', (req, res) => {
 app.get('/getCoursesByCode', (req, res) => {
   if (req.query.code) {
     console.log(`${moment.format('YYYY:MM:DD:hh:mm:ss A')}; Request for Courses by code: ${req.query.code} from: ${req.ip}`);
-    dbClient.getCoursesByCode(req.query.code, returnResult);
+    dbClient.getCoursesByCode(req.query.code).then(returnResult);
   } else {
     res.send('No code!');
   }
@@ -148,7 +148,7 @@ app.get('/getCoursesByCode', (req, res) => {
 app.get('/getSectionsByCode', (req, res) => {
   if (req.query.code) {
     console.log(`${moment.format('YYYY:MM:DD:hh:mm:ss A')}; Request for Sections by code: ${req.query.code} from: ${req.ip}`);
-    dbClient.getSectionsByCode(req.query.code, returnResult);
+    dbClient.getSectionsByCode(req.query.code).then(returnResult);
   } else {
     res.send('No code!');
   }
@@ -158,13 +158,6 @@ app.get('/getSectionsByCode', (req, res) => {
 });
 const port = 8080;
 const server = app.listen(port);
-
-dbClient.connect().then((config) => {
-  console.log(`${moment.format('YYYY:MM:DD:hh:mm:ss A')}: Database connect on ${config.host}`);
-}).catch((error) => {
-  console.log(`${moment.format('YYYY:MM:DD:hh:mm:ss A')}: Database connection error: `, error);
-  server.close();
-});
 
 console.log(`${moment.format('YYYY:MM:DD:hh:mm:ss A')}: Magic happens on port ${port}`);
 

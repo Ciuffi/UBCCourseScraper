@@ -2,7 +2,7 @@ const request = require('request');
 const cheerio = require('cheerio');
 const async = require('async');
 const moment = require('moment');
-const dbClient = require('./dbClient.js');
+const dbClient = require('./dbClien-firestore');
 
 const base_uri = 'https://courses.students.ubc.ca';
 module.exports.mine = (size, callback) => {
@@ -59,12 +59,8 @@ module.exports.mine = (size, callback) => {
     sections.forEach((section) => {
       Promises.push(dbClient.sectionInsert(section));
     });
-    Promise.all(Promises.map(p => p.catch(e => e))).then((results) => {
-      if (results.find(e => e !== undefined) !== undefined) {
-        reject(results.filter(e => e !== undefined));
-      } else {
-        resolve();
-      }
+    Promise.all(Promises).then(() => {
+      resolve();
     });
   });
 
@@ -341,7 +337,7 @@ module.exports.updateAllSectionData = (callback) => {
   const dbPromises = [];
   console.time('sectionScrape');
   console.log('Beginning full section update...');
-  dbClient.getAllSections((sections) => {
+  dbClient.getAllSections().then((sections) => {
     console.log(`Found ${sections.length} sections...`);
     fullSectionCounter = 0;
     updateSections(sections).then((updatedSections) => {
