@@ -2,8 +2,6 @@
 \.idea/
 
 node_modules/
-
-app.yaml
 .vscode/
 scripts/ubc-course-scraper-123-021285516e23.json
 .DS_Store
