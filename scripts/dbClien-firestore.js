@@ -42,7 +42,7 @@ module.exports.departmentInsert = async (department) => {
 module.exports.getDepartmentByCode = async (code, callback) => {
   const dep = await db.collection('departments').where('Code', '==', code).get();
   if (dep.size === 0) return null;
-  return dep.docs.pop().data();
+  return dep.docs.map(doc => doc.data());
 };
 
 module.exports.getDepartments = async () => {
