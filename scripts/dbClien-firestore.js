@@ -57,7 +57,7 @@ module.exports.courseInsert = async (course) => {
     URL: course.url,
   };
   try {
-    return db.collection('courses').where('Code', 'LIKE', course.code).update(data);
+    return db.collection('courses').where('Code', '==', course.code).update(data);
   } catch (e) {
     return db.collection('courses').add(data);
   }
