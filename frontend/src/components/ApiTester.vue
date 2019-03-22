@@ -17,7 +17,7 @@ import Handler from '../DBHandler';
 
 @Component
 export default class ApiTester extends Vue {
-    data: firebase.firestore.DocumentData = {};
+    data: any = {};
 
     Inputcode : string = '';
 
@@ -52,7 +52,6 @@ export default class ApiTester extends Vue {
     getDepartmentByCode() {
       Handler.getDepartmentByCode(this.Inputcode).then((deps) => {
         this.data = deps;
-        console.log(deps);
       });
     }
 

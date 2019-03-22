@@ -8,9 +8,11 @@ export default class DBHandler {
 
     private static db = firebase.firestore();
 
-    public static async GetLastTime() {
+    public static async GetLastTime(): Promise<any> {
       const scrapeDocs = await this.db.collection('scrape_times').get();
-      return scrapeDocs.docs.length !== 0 ? scrapeDocs.docs.pop().data() : {};
+      const scrapeData = scrapeDocs.docs.pop();
+      if (scrapeData === undefined) return;
+      return scrapeData.data();
     }
 
     public static async getDepartmentByCode(code : string) {
