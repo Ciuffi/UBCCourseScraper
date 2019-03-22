@@ -15,8 +15,9 @@ export default class DBHandler {
 
     public static async getDepartmentByCode(code : string) {
       const dep = await this.db.collection('departments').where('Code', '==', code).get();
-      if (dep.size === 0) return null;
-      return dep.docs.length !== 0 ? dep.docs.pop().data() : {};
+      const data = dep.docs.pop();
+      if (data === undefined) return null;
+      return data.data();
     }
 
     public static async getDepartments() {
@@ -24,13 +25,23 @@ export default class DBHandler {
       return deps.docs.length !== 0 ? deps.docs.map(doc => doc.data()) : {};
     }
 
-    public static async getCoursesByCode(code : string) {
-      const course = await this.db.collection('courses').where('Code', '==', code).get();
+    public static async getCoursesByDepartment(code : string) {
+      const department = await this.db.collection('departments').where('Code', '==', code).get();
+      const depData = department.docs.pop();
+      if (depData === undefined) return null;
+      const course = await depData.ref.collection('courses').get();
       return course.docs.length !== 0 ? course.docs.map(doc => doc.data()) : {};
     }
 
-    public static async getSectionsByCode(code : string) {
-      const section = await this.db.collection('sections').where('Code', '==', code).get();
-      return section.docs.map(doc => doc.data()) ? section.docs !== undefined : {};
+    public static async getSectionsByCourseCode(code : string) {
+      const depCode = code.split(' ')[0];
+      const department = await this.db.collection('departments').where('Code', '==', depCode).get();
+      const depData = department.docs.pop();
+      if (depData === undefined) return null;
+      const course = await depData.ref.collection('courses').where('Code', '==', code).get();
+      const courseData = course.docs.pop();
+      if (courseData === undefined) return null;
+      const section = await courseData.ref.collection('sections').get();
+      return section.docs.map(doc => doc.data());
     }
 }

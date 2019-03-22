@@ -167,6 +167,7 @@ module.exports.mine = (size, callback) => {
                       .text()
                       .trim(),
                   };
+                  course.department_code = dep.code
                   courses.push(course);
                 }
               });
@@ -245,6 +246,7 @@ module.exports.mine = (size, callback) => {
                       .trim(),
                     courseCode: course.code,
                   };
+                  section.course_code = course.code;
                   if (section.startTime && section.endTime) {
                     end = moment(section.endTime, 'HH:mm');
                     start = moment(section.startTime, 'HH:mm');

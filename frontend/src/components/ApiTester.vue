@@ -1,12 +1,13 @@
 <template>
     <div id='ApiTester'>
         <b>Last scraped at {{ScrapeTime}}</b><br>
-        <input type='text' placeholder='Enter a code!' v-model="Inputcode"></input>
-        <button v-on:click="getAllDepartments">getAllDepartments</button>
-        <button v-on:click="getDepartmentByCode">getDepartmentByCode</button>
-        <button v-on:click="getCourseByCode">getCourseByCode</button>
-        <button v-on:click="getSectionByCode">getSectionByCode</button>
-        <pre class="prettyprint lang-json" id="result">{{theData !== {} || theData !== null ? theData : `${Inputcode} not found`}}</pre>
+        <input type='text' placeholder='Enter a code!' v-model="Inputcode"/>>
+        <button v-on:click="getAllDepartments">Get All Departments</button>
+        <button v-on:click="getDepartmentByCode">Get Department By Code</button>
+        <button v-on:click="getCourseByCode">Get Course By Department Code</button>
+        <button v-on:click="getSectionByCode">Get Section By Course Code</button>
+        <button v-on:click="data = {}">Clear</button>
+        <pre class="prettyprint" id="result">{{theData}}</pre>
     </div>
 </template>
 
@@ -24,13 +25,16 @@ export default class ApiTester extends Vue {
 
     mounted() {
       const script = document.createElement('script');
-      script.setAttribute('src', 'https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst');
+      script.setAttribute('src', 'https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js');
       document.head.appendChild(script);
       this.getLastScrapeTime();
     }
 
     get theData() : string {
-      return JSON.stringify(this.data, null, 4);
+      if (this.data !== null) {
+        return JSON.stringify(this.data, null, 4);
+      }
+      return 'No data :(';
     }
 
     getLastScrapeTime() {
@@ -42,33 +46,34 @@ export default class ApiTester extends Vue {
     getAllDepartments() {
       Handler.getDepartments().then((deps) => {
         this.data = deps;
-        PR.prettyPrint();
       });
     }
 
     getDepartmentByCode() {
       Handler.getDepartmentByCode(this.Inputcode).then((deps) => {
         this.data = deps;
-        PR.prettyPrint();
+        console.log(deps);
       });
     }
 
     getCourseByCode() {
-      Handler.getCoursesByCode(this.Inputcode).then((deps) => {
+      Handler.getCoursesByDepartment(this.Inputcode).then((deps) => {
         this.data = deps;
-        PR.prettyPrint();
       });
     }
 
     getSectionByCode() {
-      Handler.getSectionsByCode(this.Inputcode).then((deps) => {
+      Handler.getSectionsByCourseCode(this.Inputcode).then((deps) => {
         this.data = deps;
-        PR.prettyPrint();
       });
     }
 }
 </script>
 
 <style scoped>
+
+.prettyprint{
+  background: black;
+}
 
 </style>
