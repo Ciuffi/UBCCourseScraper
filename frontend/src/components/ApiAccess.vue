@@ -13,7 +13,7 @@
                 Faculty: String
             }
             </pre>
-            <strong>/getDepartmentByCode?code=""</strong> List of courses by department code returns a department specified with a 'code' parameter in the post message:
+            <strong>/getDepartmentByCode?code=""</strong> returns a department specified with a 'code' parameter in the post message:
             <pre class="">    {
                 ID: int
                 Name: String

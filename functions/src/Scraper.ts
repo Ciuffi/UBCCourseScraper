@@ -29,7 +29,7 @@ export default class Scraper {
     console.log('Done db inserts.');
     console.timeEnd('dbInsert');
     return done;
-    }
+  }
     private static async fullDBInsert (departments: any[], courses: any[], sections: any[]) {
       const P1: Promise<any>[] = [];
       const P2: Promise<any>[] = [];
