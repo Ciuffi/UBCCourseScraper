@@ -8,56 +8,27 @@ const base_uri = 'https://courses.students.ubc.ca';
 export default class Scraper {
   
   public static async mine(size?: number) {
-    let departments: object[] = [];
-    let courses: Object[] = [];
-    let sections: object[] = [];
     console.log('Beginning scrape...');
     console.time('scrape');
     console.log('Beginning department collection...');
-    this.getDepartments(size)
-      .then((deps: Object[]) => {
-        departments = deps;
-        console.log(`Found ${deps.length} departments.`);
-        console.log('Beginning course collection...');
-        return deps;
-      })
-      .then(this.getCourses)
-      .then((crs: object[]) => {
-        console.log(`found ${crs.length} courses.`);
-        console.log('Beginning section collection...');
-        courses = crs;
-        return crs;
-      })
-      .then(this.getSections)
-      .then((sects) => {
-        sections = sects;
-        console.log(`found ${sects.length} sections.`);
-        console.log('Done scrape.');
-        console.timeEnd('scrape');
-        return sects;
-      })
-      .then(() => {
-        console.log('deduplicating sections..');
-        const cleanSections = this.deleteDuplicates(sections);
-        console.log('Starting DB inserts...');
-        console.time('dbInsert');
-        this.fullDBInsert(departments, courses, cleanSections)
-          .then(() => {
-            console.log('Done db inserts.');
-            console.timeEnd('dbInsert');
-            return;
-          })
-          .catch((errors) => {
-            console.log('db insert failure.');
-            console.timeEnd('dbInsert');
-            console.log(errors);
-            return;
-          });
-      }).catch((error) =>{
-        console.log('Scrape error');
-        console.log(error);
-        return;
-      });
+    const departments: any[] = await this.getDepartments(size);
+    console.log(`Found ${departments.length} departments.`);
+    console.log('Beginning course collection...');
+    const courses: any[] = await this.getCourses(departments);
+    console.log(`found ${courses.length} courses.`);
+    console.log('Beginning section collection...');
+    const sections: any[] = await this.getSections(courses);
+    console.log(`found ${sections.length} sections.`);
+    console.log('Done scrape.');
+    console.timeEnd('scrape');
+    console.log('deduplicating sections..');
+    const cleanSections: any[] = this.deleteDuplicates(sections);
+    console.log('Starting DB inserts...');
+    console.time('dbInsert');
+    const done: any = await this.fullDBInsert(departments, courses, cleanSections)
+    console.log('Done db inserts.');
+    console.timeEnd('dbInsert');
+    return done;
     }
     private static async fullDBInsert (departments: any[], courses: any[], sections: any[]) {
       const P1: Promise<any>[] = [];
@@ -74,15 +45,7 @@ export default class Scraper {
       sections.forEach((section) => {
         P3.push(dbClient.sectionInsert(section));
       });
-      Promise.all(P3)
-        .then((promises) => {
-          return;
-        })
-        .catch((e) => {
-          console.log("ERROR");
-          console.log(e);
-          return;
-        });
+      return Promise.all(P3);
     }
     private static getDepartments(size?: number): Promise<any> {
       const departments: any[] = [];
