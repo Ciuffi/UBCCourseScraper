@@ -21,5 +21,11 @@ export default new Router({
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './components/ApiAccess.vue'),
     },
+    {
+      path: '/Readme',
+      name: 'Readme',
+      component: () => import('./components/Markdown.vue'),
+      props: { MarkdownLink: 'https://raw.githubusercontent.com/Ciuffi/UBCCourseScraper/Dev/README.md' },
+    },
   ],
 });

@@ -6,7 +6,8 @@
       third party tool that scrapes and stores all the information on the UBC
       course website so that it can be easily accessed through an API.
       Anyone is welcome to use it but please do not
-    spam the server.</p>
+      spam the server.
+    </p>
   </div>
 </template>
 

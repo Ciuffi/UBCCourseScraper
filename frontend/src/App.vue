@@ -1,11 +1,18 @@
 <template>
   <div id="app">
-    <Welcome></Welcome>
-    <div id='nav'>
-      <router-link to='/'>Api Tester</router-link>
-      <router-link to='/about'>API Information</router-link>
+    <Welcome />
+    <div id="nav">
+      <router-link to="/">
+        Api Tester
+      </router-link>
+      <router-link to="/about">
+        API Information
+      </router-link>
+      <router-link to="/Readme">
+        Readme for Course Scraper
+      </router-link>
     </div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 

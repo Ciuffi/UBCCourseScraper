@@ -1,14 +1,31 @@
 <template>
-    <div id='ApiTester'>
-        <b>Last scraped at {{ScrapeTime}}</b><br>
-        <input type='text' placeholder='Enter a code!' v-model="Inputcode"/>>
-        <button v-on:click="getAllDepartments">Get All Departments</button>
-        <button v-on:click="getDepartmentByCode">Get Department By Code</button>
-        <button v-on:click="getCourseByCode">Get Course By Department Code</button>
-        <button v-on:click="getSectionByCode">Get Section By Course Code</button>
-        <button v-on:click="data = {}">Clear</button>
-        <pre class="prettyprint" id="result">{{theData}}</pre>
-    </div>
+  <div id="ApiTester">
+    <b>Last scraped at {{ ScrapeTime }}</b><br>
+    <input
+      v-model="Inputcode"
+      type="text"
+      placeholder="Enter a code!"
+    >>
+    <button @click="getAllDepartments">
+      Get All Departments
+    </button>
+    <button @click="getDepartmentByCode">
+      Get Department By Code
+    </button>
+    <button @click="getCourseByCode">
+      Get Course By Department Code
+    </button>
+    <button @click="getSectionByCode">
+      Get Section By Course Code
+    </button>
+    <button @click="data = {}">
+      Clear
+    </button>
+    <pre
+      id="result"
+      class="prettyprint"
+    >{{ theData }}</pre>
+  </div>
 </template>
 
 <script lang="ts">
