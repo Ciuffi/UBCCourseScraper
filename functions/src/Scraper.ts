@@ -3,51 +3,53 @@ import * as cheerio from 'cheerio';
 const async = require('async');
 const moment = require('moment');
 import dbClient from './dbClien-firestore';
-
+import { Department, Course, Section} from './objectInterfaces'
 const base_uri = 'https://courses.students.ubc.ca';
+
 export default class Scraper {
   
   public static async mine(size?: number) {
     console.log('Beginning scrape...');
     console.time('scrape');
     console.log('Beginning department collection...');
-    const departments: any[] = await this.getDepartments(size);
-    console.log(`Found ${departments.length} departments.`);
+    let departments: Department[] = await this.getDepartments(size);
+    console.log(`Found ${departments.length} departments. Inserting into db..`);
+    let promises: Promise<any>[] = [];
+    departments.forEach((dep) => {
+      promises.push(dbClient.departmentInsert(dep));
+    });
+    await Promise.all(promises);
+    promises = [];
+    console.log('Departments inserted.');
     console.log('Beginning course collection...');
-    const courses: any[] = await this.getCourses(departments);
-    console.log(`found ${courses.length} courses.`);
+    let courses: Course[] = await this.getCourses(departments);
+    departments = [];
+    console.log(`found ${courses.length} courses. Inserting into db..`);
+    courses.forEach((course) => {
+      promises.push(dbClient.courseInsert(course));
+    });
+    await Promise.all(promises);
+    promises = [];
+    console.log('Courses inserted.');
     console.log('Beginning section collection...');
-    const sections: any[] = await this.getSections(courses);
+    let sections: Section[] = await this.getSections(courses);
+    courses = [];
     console.log(`found ${sections.length} sections.`);
+    console.log('deduplicating sections..');
+    let cleanSections: Section[] = this.deleteDuplicates(sections);
+    sections = [];
+    console.log('Starting Section inserts...');
+    cleanSections.forEach((section) => {
+      promises.push(dbClient.sectionInsert(section));
+    });
+    await Promise.all(promises);
+    cleanSections = [];
+    promises = [];
     console.log('Done scrape.');
     console.timeEnd('scrape');
-    console.log('deduplicating sections..');
-    const cleanSections: any[] = this.deleteDuplicates(sections);
-    console.log('Starting DB inserts...');
-    console.time('dbInsert');
-    const done: any = await this.fullDBInsert(departments, courses, cleanSections)
-    console.log('Done db inserts.');
-    console.timeEnd('dbInsert');
-    return done;
+    return "done";
   }
-    private static async fullDBInsert (departments: any[], courses: any[], sections: any[]) {
-      const P1: Promise<any>[] = [];
-      const P2: Promise<any>[] = [];
-      const P3: Promise<any>[] = [];
-      departments.forEach((dep) => {
-        P1.push(dbClient.departmentInsert(dep));
-      });
-      await Promise.all(P1);
-      courses.forEach((course) => {
-        P2.push(dbClient.courseInsert(course));
-      });
-      await Promise.all(P2);
-      sections.forEach((section) => {
-        P3.push(dbClient.sectionInsert(section));
-      });
-      return Promise.all(P3);
-    }
-    private static getDepartments(size?: number): Promise<any> {
+    private static getDepartments(size?: number): Promise<Department[]> {
       const departments: any[] = [];
       return new Promise((resolve, reject) => {
         const url = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=0';
@@ -69,9 +71,9 @@ export default class Scraper {
                   .children('td')
                   .eq(0)
                   .children('a')
-                  .attr('href') != undefined
+                  .attr('href') !== undefined
               ) {
-                const department = {
+                const department: Department = {
                   code: $(elem)
                     .children('td')
                     .eq(0)
@@ -92,7 +94,6 @@ export default class Scraper {
                     .eq(2)
                     .text()
                     .trim(),
-                  courses: null,
                 };
                 departments.push(department);
               }
@@ -106,16 +107,16 @@ export default class Scraper {
       });
     }
 
-    private static getCourses(departments: any[]): Promise<any> {
-      const courses: any[] = [];
+    private static getCourses(departments: Department[]): Promise<Course[]> {
+      const courses: Course[] = [];
       return new Promise((resolve, reject) => {
         async.forEach(
           departments,
-          (dep: any, callback: Function) => {
+          (dep: Department, callback: Function) => {
             request(base_uri + dep.url, (error, response, html) => {
               if (!error) {
                 const $ = cheerio.load(html);
-                let table = $('#mainTable tr');
+                const table = $('#mainTable tr');
                 table.each(function (i, elem) {
                   if (
                     $(elem)
@@ -124,7 +125,7 @@ export default class Scraper {
                       .children('a')
                       .attr('href')
                   ) {
-                    const course: any = {
+                    const course: Course = {
                       code: $(elem)
                         .children('td')
                         .eq(0)
@@ -140,8 +141,8 @@ export default class Scraper {
                         .eq(1)
                         .text()
                         .trim(),
+                      departmentCode: dep.code,
                     };
-                    course.department_code = dep.code
                     courses.push(course);
                   }
                 });
@@ -161,16 +162,16 @@ export default class Scraper {
 
       
 
-  private static getSectionsSubset(courses: any[]): Promise<any> {
-    const sections: any[] = [];
+  private static getSectionsSubset(courses: Course[]): Promise<Section[]> {
+    const sections: Section[] = [];
     return new Promise((resolve, reject) => {
       async.eachSeries(
         courses,
-        (course: any, callback: Function) => {
+        (course: Course, callback: Function) => {
           request(base_uri + course.url, (error, response, html) => {
             if (!error) {
               const $ = cheerio.load(html);
-              let table = $('.section-summary tr');
+              const table = $('.section-summary tr');
               table.each(function (i, elem) {
                 if (
                   $(elem)
@@ -179,7 +180,7 @@ export default class Scraper {
                     .children('a')
                     .attr('href')
                 ) {
-                  const section: any = {
+                  const section: Section = {
                     status: $(elem)
                       .children('td')
                       .eq(0)
@@ -221,13 +222,12 @@ export default class Scraper {
                       .text()
                       .trim(),
                     courseCode: course.code,
+                    departmentCode: course.departmentCode,
                   };
-                  section.course_code = course.code;
-                  section.department_code = course.department_code;
                   if (section.startTime && section.endTime) {
-                    let end = moment(section.endTime, 'HH:mm');
-                    let start = moment(section.startTime, 'HH:mm');
-                    let length = moment.duration(end.diff(start)).asMinutes();
+                    const end = moment(section.endTime, 'HH:mm');
+                    const start = moment(section.startTime, 'HH:mm');
+                    const length = moment.duration(end.diff(start)).asMinutes();
                     section.length = `${length} minutes`;
                     sections.push(section);
                   } else {
@@ -249,7 +249,7 @@ export default class Scraper {
     });
   };
 
-  private static async getSections(courses: any[]) {
+  private static async getSections(courses: Course[]): Promise<Section[]> {
     const split = 100;
     const len = courses.length / split;
     const promises: Promise<any>[] = [];

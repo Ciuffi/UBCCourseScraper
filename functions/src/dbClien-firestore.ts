@@ -1,5 +1,6 @@
 //GAE
 import * as admin from 'firebase-admin';
+import { Department, Course, Section} from './objectInterfaces'
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
@@ -14,16 +15,16 @@ admin.initializeApp({
 const db = admin.firestore();
 
 export default class DBHandler {
-  public static async courseInsert(course: any) {
+  public static async courseInsert(course: Course) {
     const data: any = {
       Name: course.name,
       Code: course.code,
       URL: course.url,
-      department_code: course.department_code,
+      department_code: course.departmentCode,
     };
     try {
       const depCollection = db.collection('departments');
-      const department = await depCollection.where('Code', '==', course.department_code).get()
+      const department = await depCollection.where('Code', '==', course.departmentCode).get()
       const depData = department.docs.pop();
       if (depData === undefined) throw Error();
       const courseCollection = depCollection.doc(depData.id).collection('courses');
@@ -32,13 +33,13 @@ export default class DBHandler {
       if (courseData === undefined) throw Error();
       return courseCollection.doc(courseData.id).update(data);
     } catch (e) {
-      const department = await db.collection('departments').where('Code', '==', course.department_code).get()
+      const department = await db.collection('departments').where('Code', '==', course.departmentCode).get()
       const departmentData = department.docs.pop();
       if (departmentData === undefined) return;
       return db.collection('departments').doc(departmentData.id).collection('courses').add(data);
     }
   };
-  public static async sectionInsert(section: any) {
+  public static async sectionInsert(section: Section) {
     const data: any = {
       Code: section.code,
       URL: section.url,
@@ -48,16 +49,16 @@ export default class DBHandler {
       'End Time': section.endTime,
       Type: section.type,
       Length: section.length ? section.length : '',
-      course_code: section.course_code,
-      department_code: section.department_code
+      course_code: section.courseCode,
+      department_code: section.departmentCode
     };
     try {
       const depCollection = db.collection('departments');
-      const department = await depCollection.where('Code', '==', section.department_code).get();
+      const department = await depCollection.where('Code', '==', section.departmentCode).get();
       const departmentData = department.docs.pop();
       if (departmentData === undefined) throw Error();
       const CourseCollection = depCollection.doc(departmentData.id).collection('courses');
-      const course = await CourseCollection.where('Code', '==', section.course_code).get();
+      const course = await CourseCollection.where('Code', '==', section.courseCode).get();
       const courseData = course.docs.pop();
       if (courseData === undefined) throw Error();
       const sectionCollection = CourseCollection.doc(courseData.id).collection('sections');
@@ -67,11 +68,11 @@ export default class DBHandler {
       return sectionCollection.doc(sectionData.id).update(data);
     } catch (e) {
       const depCollection = db.collection('departments');
-      const department = await depCollection.where('Code', '==', section.department_code).get();
+      const department = await depCollection.where('Code', '==', section.departmentCode).get();
       const departmentData = department.docs.pop();
       if (departmentData === undefined) throw Error();
       const CourseCollection = depCollection.doc(departmentData.id).collection('courses');
-      const course = await CourseCollection.where('Code', '==', section.course_code).get();
+      const course = await CourseCollection.where('Code', '==', section.courseCode).get();
       const courseData = course.docs.pop();
       if (courseData === undefined) throw Error();
       const sectionCollection = CourseCollection.doc(courseData.id).collection('sections');
@@ -85,7 +86,7 @@ export default class DBHandler {
       end_time: endTime,
     });
   };
-  public static async departmentInsert(department: any): Promise<any> {
+  public static async departmentInsert(department: Department): Promise<any> {
     const data = {
       Name: department.name,
       Code: department.code,
