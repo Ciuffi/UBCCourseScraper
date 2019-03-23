@@ -11,10 +11,10 @@ import Scraper from './Scraper.js'
 //  response.send("Hello from Firebase!");
 // });
 
-export const Scrape = functions.https.onRequest((request, response) => {
+export const Scrape = functions.https.onRequest(async (request, response) => {
+    const done = await Scraper.mine(request.query.size);
+    console.log(`Returned: ${done}`);
     response.header("Access-Control-Allow-Origin", "*");
-    response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    Scraper.mine(request.query.size).then(() =>{
-        response.send(200);
-    }).catch((error) => console.log(`yikes ${error}`));
+    response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");    
+    response.send(`returned ${done}`);
 });
